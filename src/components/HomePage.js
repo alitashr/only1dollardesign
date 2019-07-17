@@ -8,7 +8,8 @@ import {Container, Row, Col} from 'react-bootstrap';
 import FullDesign from './FullDesign';
 
 import axios from 'axios';
-import { timeout } from 'q';
+import Checkout from './Checkout';
+import FAQ from './FAQ';
 
 class HomePage extends React.Component {
     constructor(props) {
@@ -29,6 +30,7 @@ class HomePage extends React.Component {
             Unit: "cm",
             Width: 800
         }
+        let navTabs = ["designs", "faq","checkout"];
         
         this.state={
             key:'',
@@ -45,7 +47,8 @@ class HomePage extends React.Component {
             selectedDesign:'',
             InCart: false,
             designDetails: details,
-            cart:[]
+            cart:[],
+            checkout:false
         }
         this.callCount=0;
         this.designsPerPage =10;
@@ -55,12 +58,12 @@ class HomePage extends React.Component {
         this.handleDesignChange = this.handleDesignChange.bind(this);
         this.handleBuyThis = this.handleBuyThis.bind(this);
         this.handleAddToCart = this.handleAddToCart.bind(this);
+        this.removeItemFromCart = this.removeItemFromCart.bind(this);
+        
     }
     
     componentDidMount(){
-        console.log("did mount");
         this.getKey();
-       //this.getDesignList('224ed41e26e6416998b13635ed5518fc')
     }
     
     selectCategory(filterList){
@@ -69,11 +72,9 @@ class HomePage extends React.Component {
         },()=>{
             this.LoadFilteredDesigns(0)
         });
-        console.log(this.state.selectedFilters);
 
     }
     handlePageChange(direction){
-        console.log('handlePageChange');
         let currentPage = this.getNewPageNumber(direction);
         
         let currentPageDesigns = this.getCurrentPageDesigns(currentPage,this.state.filteredDesignList);
@@ -102,13 +103,12 @@ class HomePage extends React.Component {
         })
     }
     handleFullDesignLoading= (busyStateBool)=>{
-        console.log('full design loaded')
         this.setState({
             fullDesignLoading:busyStateBool
         })
     }
     handleDesignChange= (direction)=>{
-        this.handleFullDesignLoading(true);
+        //this.handleFullDesignLoading(true);
         const currentDesign = this.state.selectedDesign;
         var designthumbArray = [...this.state.designThumbs];
         var index
@@ -118,10 +118,6 @@ class HomePage extends React.Component {
                 return item;
             }
         });
-        console.log(index);
-        console.log(obj);
-        console.log(index === designthumbArray.length-1);
-        console.log(this.state.selectedDesign);
         var totalPages = this.state.totalPages;
         if(direction === 'next'){
             if(index === designthumbArray.length-1)
@@ -135,13 +131,18 @@ class HomePage extends React.Component {
                         designThumbs: thumbList
                     });
                     let selectedDesign = thumbList[0].Name;
-                    this.getDesignDetails(selectedDesign);
+                    let selectedThumb = "https://explorug.com/v2/" + thumbList[0].Value;
+                    this.selectDesign(selectedDesign, selectedThumb);
+                    //this.getDesignDetails(selectedDesign);
                 });
             }
             else{
                 index++;
                 let selectedDesign = designthumbArray[index].Name;
-                this.getDesignDetails(selectedDesign);
+                let selectedThumb = "https://explorug.com/v2/" + designthumbArray[index].Value;
+                this.selectDesign(selectedDesign, selectedThumb);
+                    
+                //this.getDesignDetails(selectedDesign);
             }   
         }
         else{
@@ -155,44 +156,86 @@ class HomePage extends React.Component {
                         designThumbs: thumbList
                     });
                     let selectedDesign = thumbList[thumbList.length-1].Name;
-                    this.getDesignDetails(selectedDesign);
+                    let selectedThumb = "https://explorug.com/v2/" + thumbList[thumbList.length-1].Value;
+                    this.selectDesign(selectedDesign, selectedThumb);
+                    
+                    //this.getDesignDetails(selectedDesign);
                 });
             }
             else{
                 index--;
                 let selectedDesign = designthumbArray[index].Name;
-                this.getDesignDetails(selectedDesign);
+                let selectedThumb = "https://explorug.com/v2/" + designthumbArray[index].Value;
+                this.selectDesign(selectedDesign, selectedThumb);
+                    
+                //this.getDesignDetails(selectedDesign);
             }
         }
     }
-    handleBuyThis(){
-        let designToBuy = this.state.selectedDesign;
-        console.log(designToBuy)
+    handleAddToCart(imgSrc, selectedDesign){
+        if(!this.alreadyInCart(selectedDesign))
+            this.addDesignToCart(imgSrc, selectedDesign).then(()=>{
+                console.log('to buy design now')
+            });
+        
+    
     }
     
-    handleAddToCart(){
-        let designToAdd = this.state.selectedDesign;
-        let designCart = [...this.state.cart];
-        let selectedThumb =  this.state.selectedThumb;
-
-        designCart.push({design:designToAdd, thumb: selectedThumb});
-
+    handleBuyThis(imgSrc, selectedDesign){
+        let fulldesignSrc =imgSrc;
+        if(!this.alreadyInCart(selectedDesign))
+            this.addDesignToCart(fulldesignSrc, selectedDesign).then(()=>{
+                console.log('to buy design now')
+            });
+        //BUY design
         this.setState({
-            InCart: true,
-            cart: designCart
+            checkout: true //checkout
         })
-        console.log(designCart)
+
+    }
+    alreadyInCart(selectedDesign){
+        let currentDesign = selectedDesign;
+        let designCart = [...this.state.cart];
+        let design1 = designCart.filter((design)=>{
+            return design.design === currentDesign
+        });
+        if(design1.length>0) return true;
+        else return false;
+    }
+    addDesignToCart(fulldesignSrc, selectedDesign){
+        return new Promise((resolve, reject) => {
+            let designToAdd = selectedDesign;
+            let designCart = [...this.state.cart];
+            let selectedThumb =  this.state.selectedThumb;
+    
+            designCart.push({design:designToAdd, thumb: selectedThumb, fullDesign: fulldesignSrc});
+    
+            this.setState({
+                InCart: true,
+                cart: designCart
+            }, ()=>{
+                resolve();
+            })
+            console.log(designCart)
+        });
+
+    }
+    removeItemFromCart(index){
+        let designcart = [...this.state.cart];
+        designcart.splice(index, 1);
+        console.log(designcart)
+        this.setState({
+            cart: designcart
+        })
     }
     getKey(){
         this.callCount++;
-        console.log('get key '+ this.callCount)
         let data = new FormData();
         data.append("action", "login");
         data.append("username","o1dd");
         data.append("password","oodd");
         axios.post(this.domain + '/appprovider.aspx', data)
         .then(response =>{
-            console.log(response);
             if(response.data===''&& this.callCount<2){
                 setTimeout(() => {
                     this.getKey();
@@ -224,8 +267,6 @@ class HomePage extends React.Component {
                   let folderList = data.filter(function(item, index) {
                     return item.Type === 'folder' && data.indexOf(item) === index && item.Name!=="Designs"
                   });
-                  console.log(designList);
-                  console.log(folderList);
                   
                  this.setState({
                     key:key,
@@ -252,7 +293,6 @@ class HomePage extends React.Component {
     }
 
     filterDesignList(){
-        console.log("filterDesignList")
         let designList = [...this.state.designList];
         let filters = this.state.selectedFilters;
         let filteredList = filters.length ? []: designList;
@@ -265,7 +305,6 @@ class HomePage extends React.Component {
             });
         }
         filteredList =  this.shuffle(filteredList);
-        console.log(filteredList);
         return filteredList;
         
     }
@@ -291,12 +330,11 @@ class HomePage extends React.Component {
         return designList;
     }
     
-    selectDesign=(event)=>{
+    selectDesign=(selectedDesign, selectedThumb)=>{
         this.handleFullDesignLoading(true);
-        let selectedDesign = event.target.getAttribute('data-name');
-        let selectedThumb = event.target.getAttribute('src');
         this.setState({
             selectedThumb: selectedThumb
+            
         });
         this.getDesignDetails(selectedDesign);
     }
@@ -311,9 +349,12 @@ class HomePage extends React.Component {
         .then(response=>{
             let designdetails = response.data;
             //console.log(designdetails)
+            let inCart = this.alreadyInCart(selectedDesign) ? true: false;
+        
             this.setState({
                 selectedDesign:selectedDesign,
-                designDetails: designdetails
+                designDetails: designdetails,
+                InCart: inCart
             });
           
         });
@@ -337,11 +378,13 @@ class HomePage extends React.Component {
         });
         
     }
-
+//page=designs,faq,checkout
     render() {
         window.state= this.state;
         return (
             <div>
+               
+                {!this.state.checkout ?
                 <Container style={{marginTop: '40px'}}>
                     <Row>
                         <Col xs={8}> 
@@ -378,7 +421,7 @@ class HomePage extends React.Component {
                                 designDetails= {this.state.designDetails} 
                                 handleClose= {this.handlePopUpClose}
                                 handleDesignChange = {this.handleDesignChange}
-                                handleBusySignal = {this.handleFullDesignLoading}
+                                handleFullDesignLoading = {this.handleFullDesignLoading}
                                 handleBuyThis = {this.handleBuyThis}
                                 handleAddToCart = {this.handleAddToCart}
                             ></FullDesign>
@@ -387,6 +430,13 @@ class HomePage extends React.Component {
                         
                     </Row>        
                 </Container>
+                :
+                <Checkout
+                    cart = {this.state.cart}
+                    removeItemFromCart = {this.removeItemFromCart}
+                >
+                </Checkout>
+                }
                 <SocialMediaShare/>
                 <div id="copyright" className="text-center">
                     © Alternative Technology 2019 - All rights reserved
@@ -394,6 +444,7 @@ class HomePage extends React.Component {
                         <span className="footerLinks">Terms of Use</span>
                     </div>
                 </div>
+                <FooterBar/>
             </div>
         );
     }

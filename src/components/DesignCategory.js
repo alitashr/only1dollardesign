@@ -41,7 +41,6 @@ class DesignCategory extends Component {
             selectedFilters:filterList,
             selectAll: selectAll
         });
-        console.log(filterList)
         this.props.handleClick(filterList);
     }
     render() {

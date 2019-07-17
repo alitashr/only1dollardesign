@@ -6,6 +6,8 @@ import prevImg from '../images/prev.png';
 import nextImg from '../images/next.png';
 import selectedDesign from '../images/Solidem.jpg';
 
+import {Colorpatch} from './StyledForm';
+
 
 class FullDesign extends Component {
     constructor(props) {
@@ -29,8 +31,11 @@ class FullDesign extends Component {
         var textClass = this.Intensity(color) > 128 ? "goBlack":"";
         return textClass;
     }
+    getTextColor(color){
+        var textColor = this.Intensity(color) > 128 ? "#000":"#fff";
+        return textColor;
+    }
     closePopup(){
-        console.log('handle close')
         this.props.handleClose();
     }
     getDesignName=(designPath)=>{
@@ -46,31 +51,31 @@ class FullDesign extends Component {
         this.props.handleDesignChange('prev');
     }
     handleImageLoaded =()=>{
-            this.props.handleBusySignal(false);     
+            this.props.handleFullDesignLoading(false);     
     }
-    handleBuyThis=()=>{
-        this.props.handleBuyThis();
+    handleBuyThis=(imgsrc, selectedDesign)=>{
+        this.props.handleBuyThis(imgsrc, selectedDesign);
     }
-    handleAddToCart=()=>{
-        this.props.handleAddToCart();
+    handleAddToCart=(imgsrc,selectedDesign)=>{
+        this.props.handleAddToCart(imgsrc, selectedDesign);
     }
-    getBtnClass(){
+    getBtnClass(InCart){
         var btnClass = "btn btn-sm btn-primary cartbtn";
-        btnClass = this.props.InCart ?  btnClass + ' itemincart ': btnClass;
+        btnClass = InCart ?  btnClass + ' itemincart ': btnClass;
+        console.log(btnClass)
         return btnClass;
     }
     render() {
+        let InCart = this.props.InCart
         let selectedDesign = this.props.selectedDesign;
         let designName = this.getDesignName(selectedDesign);
         let designDetails = this.props.designDetails;
-        console.log(designDetails)
         let domain = "https://explorug.com/v2/";
         let imgsrc= domain+ designDetails.RenderingProperties.RenderedImagePath;
-        console.log(imgsrc);
         return (
             <div className="container-fluid popupareawrapper">
                 <Row>
-                    <Col lg={{ span: 8, offset: 2 }} md={{ span: 8, offset: 2 }} sm={{ span: 10, offset: 1 }} xm={10}>
+                    <Col lg={{ span: 8, offset: 2 }} md={{ span: 10, offset: 1 }} sm={{ span: 10, offset: 1 }} xm={10}>
                         <Row className="myrow" id="popuparea">
                             <BusySignal show={this.props.busy}></BusySignal>
                             <div id="closePopUp" onClick={this.closePopup}><img alt="close button icon" src= {closeBtn} width="20" /></div>
@@ -80,7 +85,7 @@ class FullDesign extends Component {
                             <div id="navNext" title="NEXT" onClick={this.showNextDesign}>
                                 <img src={nextImg} width="30" alt="Next icon"/>
                             </div>
-                            <Col xs={10} className="designdisplay">
+                            <Col xs={11} className="designdisplay">
                                 <Col lg={4} md={4} sm={3} xs={4} className="largeimg nopadding">
                                     <div>
                                         {
@@ -100,22 +105,22 @@ class FullDesign extends Component {
                                     designDetails.DesignColors.length>0?
                                     designDetails.DesignColors.map((color, index)=>
                                         <div  key={index}>
-                                            <div className={" colorPatch " + this.getTextColorClass(color.Color)} style={{backgroundColor:color.Color}}>
+                                            <Colorpatch backgroundColor={color.Color} textColor = {this.getTextColor(color.Color)}>
                                                 <div>{color.ColorName}</div>
-                                            </div>
+                                            </Colorpatch>
                                         </div>
                                     )
                                     :null
                                 }
                                 </Col>
-                                <Col lg={4} md={4} sm={5} xs={5} className="textureimgarea nopadding">
+                                <Col lg={5} md={8} sm={10} xs={10} className="textureimgarea nopadding">
                                     <div id="designInfo" className="shareSpace">                
                                         <div className="designInfoName"> {designName} </div>
                                         
                                     </div>
                                     <div id="cartOptions">
-                                        <Col id="buythis" lg={7} md={7} sm={6} xs={10} onClick={this.handleBuyThis}>
-                                        <div className={this.getBtnClass()}>
+                                        <Col id="buythis" lg={7} md={7} sm={6} xs={10} onClick={()=>this.handleBuyThis(imgsrc, selectedDesign)}>
+                                        <div className={this.getBtnClass(InCart)}>
                                             <span>
                                                 BUY
                                             </span>
@@ -123,8 +128,8 @@ class FullDesign extends Component {
                                             <br/><div style={{fontSize:'18px'}}>$ 1</div>
                                         </div>
                                         </Col>
-                                        <Col id="addtocart" lg={5} md={5} sm={6} xs={10} onClick={this.handleAddToCart}>
-                                            <div className={this.getBtnClass()}>
+                                        <Col id="addtocart" lg={5} md={5} sm={6} xs={10} onClick={()=>this.handleAddToCart(imgsrc, selectedDesign)}>
+                                            <div className={this.getBtnClass(InCart)}>
                                                 <div style={{fontSize:'18px'}} > +</div>
                                                 <div>CART</div>
                                             </div>

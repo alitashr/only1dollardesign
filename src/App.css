@@ -1,5 +1,6 @@
 body {
   font-family: 'Lato', sans-serif;
+  background: #f5f5f5;
   color: #333;
   font-size: 14px;
   letter-spacing: 0.3px;
@@ -8,13 +9,13 @@ body {
   background-color: #f5f5f5;
 }
 
-.col-10 {
+.thumbs.col-10 {
   -ms-flex: 0 0 83.333333%;
   flex: 0 0 50%;
 }
 @media (min-width: 576px)
 {
-  .col-sm-4 {
+  .thumbs.col-sm-4 {
     -ms-flex: 0 0 25%;
     flex: 0 0 25%;
     max-width: 25%;
@@ -23,7 +24,7 @@ body {
 
 @media (min-width: 768px)
 { 
-  .col-md-4 {
+  .thumbs.col-md-4 {
     -ms-flex: 0 0 20%;
     flex: 0 0 20%;
     max-width: 25%;
@@ -31,14 +32,14 @@ body {
 }
 @media (min-width: 992px)
 {
-  .col-md-4 {
+  .thumbs.col-md-4 {
     -ms-flex: 0 0 20%;
     flex: 0 0 20%;
     max-width: 25%;
   }
 }
 @media (min-width: 1200px)
-{ .col-lg-4 {
+{ .thumbs.col-lg-4 {
       -ms-flex: 0 0 20%;
       flex: 0 0 20%;
       max-width: 25%;
@@ -49,6 +50,9 @@ body {
 }
 .btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show>.btn-primary.dropdown-toggle {
   background-color: #DB97DB;  
+}
+.btn-primary:hover, .btn-primary:focus, .btn-primary.focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
+  background: #3D1930;
 }
 .btn-sm, .btn-group-sm > .btn {
   border-radius: 0;
@@ -88,7 +92,7 @@ body {
   padding: 5px 10px;
   background: #D9D9D9;
   margin-top: -2px;
-  min-width: 190px;
+  min-width: 200px;
 }
 #filterarea .dropdown-item {
   background: url(images/cb_false.png) no-repeat right;
@@ -302,30 +306,10 @@ a.shareIcon {
   width: 100%;
   min-width: 15em;
 }
-.colorPatch {
-  height: 1.8em;
-  background: #ccc;
-  margin-bottom: 5px;
-  font-size: 0.8em;
-  color: #fff;
-  line-height: 1.8em;
-  padding: 0 0.4em;
-  width: 100%;
-  text-align: center;
-  min-width: 10em;
-}
-.goBlack {
-  color: #000;
-}
+
 #designInfo {
   color: #323232;
   text-transform: uppercase;
-}
-@media (min-width: 1200px)
-{
-  #designInfo {
-    min-width: 20em;
-  }
 }
 .designInfoName {
   font-size: 20px;
@@ -361,6 +345,10 @@ a.shareIcon {
   position: absolute;
   bottom: 0;
   width: 100%;
+  max-width: 18em;
+  left: 0;
+  right: 0;
+  margin: auto;
 }
 #cartOptions > div {
   padding: 0;
@@ -369,4 +357,35 @@ a.shareIcon {
 }
 .FullDesign{
   background: red;
+}
+
+@media (min-width: 1200px)
+{
+  #designInfo {
+    min-width: 20vw;
+  }
+}
+
+@media (max-width: 1200px)
+{
+  #cartOptions > div {
+    min-width: 8em;
+  }
+  .colorPatchCol{
+    padding:10px
+  }
+}
+
+
+@media (max-width: 800px)
+{
+  .designdisplay .textureimgarea {
+    display: block;
+    min-height: 100px;
+    margin: auto;
+    margin-top: 0.5em;
+  }
+  #cartOptions{
+    position: unset
+  }
 }

@@ -1,13 +1,11 @@
 import React, {Component} from 'react';
 import {Col, Row} from 'react-bootstrap';
-import axios from 'axios';
 import BusySignal from './BusySignal';
 
 class DesignsList extends Component {
     
     nextPage = ()=>{
         this.props.handleBusySignal(true);
-        
         this.props.pageChange('next');
     }
     prevPage = ()=>{
@@ -15,10 +13,11 @@ class DesignsList extends Component {
         this.props.pageChange('prev');
     }
     selectDesign=(event)=>{
-        this.props.selectDesign(event);
+        let selectedDesign = event.target.getAttribute('data-name');
+        let selectedThumb = event.target.getAttribute('src');
+        this.props.selectDesign(selectedDesign, selectedThumb);
     }
     handleImageLoaded =()=>{
-        console.log(this.props.busy)
         if(this.props.busy)
             this.props.handleBusySignal(false);     
     }
@@ -26,7 +25,6 @@ class DesignsList extends Component {
     render() {
         var thumbs= this.props.designThumbs || [];
         let showBusySignal = this.props.busy;
-        console.log('busy ? ' + showBusySignal)
         return ( 
         <React.Fragment>
         <div className = "container-fluid" >
