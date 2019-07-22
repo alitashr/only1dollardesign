@@ -62,7 +62,6 @@ class FullDesign extends Component {
     getBtnClass(InCart){
         var btnClass = "btn btn-sm btn-primary cartbtn";
         btnClass = InCart ?  btnClass + ' itemincart ': btnClass;
-        console.log(btnClass)
         return btnClass;
     }
     render() {

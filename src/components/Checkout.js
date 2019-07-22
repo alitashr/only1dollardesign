@@ -19,7 +19,7 @@ class Checkout extends Component {
     render() {
         let cart =this.props.cart;
         return (
-            <div>
+            <Col lg={{ span: 8, offset: 2 }} md={{ span: 8, offset: 2 }} sm={{ span: 8, offset: 1 }} xm={12}>
                 <CategoryTitle>
                     <span>Your Cart</span>  
                 </CategoryTitle>
@@ -94,7 +94,7 @@ class Checkout extends Component {
                 </Col>
                 </Row>
                
-            </div>
+            </Col>
         );
     }
 }
