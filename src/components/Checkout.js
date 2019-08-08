@@ -1,31 +1,72 @@
-import React, { Component } from 'react';
+import React, {useContext} from 'react';
 import { Col, Row } from 'react-bootstrap';
-// import CheckoutButton from './Button';
+import { Link } from "react-router-dom";
 
-import {CheckoutButton, CartItemWrapper, CartIndex, Link, CartInfo, RemoveDesign, CategoryTitle, CartIsNowEmpty} from './StyledForm';
+import {CheckoutButton, CartItemWrapper, CartIndex, CartDesignThumb, CartInfo, RemoveDesign, CategoryTitle, CartIsNowEmpty, BtnLink} from './StyledComponents';
 
-class Checkout extends Component {
-    getDesignName=(designPath)=>{
+import {WholeContext} from '../App';
+import GeneralInfo from './GeneralInfo';
+
+const Checkout = (props) => {
+    console.log(props)
+    
+    const checkoutContext = useContext(WholeContext);
+    
+    let cart = checkoutContext.state.cart;
+    let dispatch = checkoutContext.dispatch;
+
+    cart = cart ? cart:[];
+
+    const getDesignName = (designPath)=>{
         var dotpos = designPath.lastIndexOf('.');
         var slashpos = designPath.lastIndexOf('/') +1;
         var roomName = designPath.substr(slashpos, dotpos-slashpos);
         return roomName;
     }
-    removeItemFromCart = (item)=>{
-        let index = this.props.cart.indexOf(item);
-        this.props.removeItemFromCart(index)
+    const removeItemFromCart = (item)=>{
+        let index = cart.indexOf(item);
+        console.log('item to remove '+ index)
+        let designcart = cart;
+        designcart.splice(index, 1);
+        console.log(designcart)
+        cart = designcart;
+        window.localStorage.setItem('cart', JSON.stringify(cart));
+        dispatch({
+            type: 'set_cart',
+            payload: cart
+        });  
+    
+    }
+    const checkOutAction = ()=>{
+        var itemList = '';
+        cart.forEach((element, index) => {
+            let i = index+1;
+            itemList += '&item_name_'+i+'='+getDesignName(element.design)+'&amount_'+i+'=1'
+            
+        });
+        //for now
+        itemList = itemList!==''? 
+            itemList: 
+            "&item_name_1=Lunazoph&amount_1=1"+
+            "&item_name_2=Mechanic&amount_2=1"+
+            "&item_name_3=Wiros Egolox&amount_3=1";
+
+        
+        window.location = "https://www.paypal.com/cgi-bin/webscr?currency_code=USD&cmd=_cart&upload=1&business=onlyhundred@explorug.net&lc=US&notify_url=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fipn%2ephp"+
+        itemList+
+        //"&custom=543a385a-cbe8-4aae-bd17-a06e31cc8e93"+
+        "&button_subtype=services&no_note=1&no_shipping=1&rm=1"+
+        "&return=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fthank"+
+        "&cancel_return=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fhelp&bn=PP%2dBuyNowBF%3abtn_buynow_LG%2egif%3aNonHosted";
+        
     }
     
-    render() {
-        let cart =this.props.cart;
-        return (
+    return (
             <Col lg={{ span: 8, offset: 2 }} md={{ span: 8, offset: 2 }} sm={{ span: 8, offset: 1 }} xm={12}>
                 <CategoryTitle>
                     <span>Your Cart</span>  
                 </CategoryTitle>
-                {/* <div className="categoryTitle mtop">
-                   <span>Your Cart</span>
-                </div> */}
+               
                 <Row>
                 <Col lg={3} md={3} sm={12} xs={12} style={{paddingBottom:"30px"}}>
                         The designs hosted on this site are royalty-free and ready to be used in a variety of applications.                
@@ -50,15 +91,15 @@ class Checkout extends Component {
                                     </CartIndex>
                                     
                                         <div className="cartItem pull-left">
-                                            <Link src={item.thumb} width="100px" pullLeft>
-                                            </Link>
+                                            <CartDesignThumb src={item.thumb} width="100px" pullLeft>
+                                            </CartDesignThumb>
                                             <CartInfo pullLeft>
-                                                <div className="cartItemName">{this.getDesignName(item.design)}</div>
+                                                <div className="cartItemName">{getDesignName(item.design)}</div>
                                                 <div className="cartItemPrice">$1.00</div>
                                             </CartInfo>
                                             
                                             <br clear="both"/>
-                                            <RemoveDesign onClick={()=>this.removeItemFromCart(item)}></RemoveDesign>
+                                            <RemoveDesign onClick={()=>removeItemFromCart(item)}></RemoveDesign>
                                         
                                         </div>
                                     <br clear="both"/>
@@ -76,18 +117,33 @@ class Checkout extends Component {
                     }
                         <Col lg={5} md={5} sm={6} xs={12}>
                             <center>
-                                <CheckoutButton disabled={cart.length>0 ? false:true}>
-                                <strong>Checkout<br/>PayPal</strong>
-                                    <br/>
-                                    ${cart.length}.00 Total buy
-                                </CheckoutButton>
-
-                                <CheckoutButton marginTop="10px" disabled={cart.length>0 ? false:true}>
-                                <strong>Checkout<br/>Prepaid Coupon</strong>
-                                </CheckoutButton>
-                
-                                <div style={{marginTop:"10px"}}>Having trouble checking out?<br/>Please contact us at <br/>
-                                <a href="mailto:contact@only1dollardesign.com">contact@only1dollardesign.com</a></div>
+                                {cart.length>0 ? 
+                                    <div>
+                                        <CheckoutButton onClick={checkOutAction}>
+                                            <strong>Checkout<br/>PayPal</strong>
+                                            <br/>
+                                            ${cart.length}.00 Total buy
+                                        </CheckoutButton>
+                                        <BtnLink to={{pathname: '/coupon'}}>
+                                            <CheckoutButton marginTop="10px">
+                                                <strong>Checkout<br/>Prepaid Coupon</strong>
+                                            </CheckoutButton>    
+                                        </BtnLink>
+                                    </div>
+                                    :
+                                    <div>
+                                        <CheckoutButton disabled bgColor = '#797979' bgColorHover= '#797979' bgHoverText =  '#323232'>
+                                            <strong>Checkout<br/>PayPal</strong>
+                                            <br/>
+                                            ${cart.length}.00 Total buy
+                                        </CheckoutButton>
+                                        <CheckoutButton disabled marginTop="10px" bgColor = '#797979' bgColorHover= '#797979' bgHoverText =  '#323232'>
+                                            <strong>Checkout<br/>Prepaid Coupon</strong>
+                                        </CheckoutButton>    
+                                    </div>
+                                    }
+                                
+                                <GeneralInfo/>
                             </center>
                         </Col>
                     </Row>
@@ -95,8 +151,8 @@ class Checkout extends Component {
                 </Row>
                
             </Col>
-        );
-    }
-}
+        
+    );
+};
 
 export default Checkout;

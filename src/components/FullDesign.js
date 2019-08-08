@@ -1,23 +1,69 @@
-import React, { Component } from 'react';
+import React, {useContext} from 'react';
 import {Col, Row} from 'react-bootstrap';
+import { Link } from "react-router-dom";
+
 import BusySignal from './BusySignal';
-import closeBtn from '../images/closePopUp.png';
+import {PopupWrapper, 
+    PopupArea,
+    LargeImg,
+    DesignDisplay,
+    NavBtn,
+    ClosePopup,
+    ColorPatchCol,
+    Colorpatch,
+    DesignNameArea,
+    DesignInfo,
+    DesignInfoName,
+    CartBtnWrap,
+    CartBtn,
+    CartOptions
+    } from './StyledComponents';
+    
 import prevImg from '../images/prev.png';
 import nextImg from '../images/next.png';
-import selectedDesign from '../images/Solidem.jpg';
+import closeBtn from '../images/closePopUp.png';
 
-import {Colorpatch} from './StyledForm';
+import {DesignContext} from '../App';
+import {WholeContext} from '../App';
+
+import UtilitiesFn from '../functions/UtilitiesFn';
+let utilityFn = new UtilitiesFn();
 
 
-class FullDesign extends Component {
-    constructor(props) {
-        super(props);
-        this.closePopup = this.closePopup.bind(this);
-        this.showNextDesign = this.showNextDesign.bind(this);
-        this.showPrevDesign = this.showPrevDesign.bind(this);
-    }
+const FullDesign = (props) => {
+   // let {handleClose, handleCart, handleDesignChange, goToCheckout} = props;
+    
+    const designContextFn = useContext(DesignContext);
+    // const selectedDesign = designContext.selectedDesign;
+    // const designDetails = designContext.designDetails;
+    // const inCart = designContext.inCart;
+    // let cart = designContext.cart;
+    
+    // const selectedThumb = designContext.selectedThumb;
+    // const firstDesign = designContext.firstDesign;
+    // const dispatch = designContext.designDispatch;
+    // let loading=  designContext.loading;
 
-    Intensity(rgb) {
+    const handleDesignChange = designContextFn.handleDesignChange;
+    
+    const designContext = useContext(WholeContext);
+    const selectedDesign = designContext.state.selectedDesign;
+    const designDetails = designContext.state.designDetails;
+    const inCart = designContext.state.inCart;
+    let cart = designContext.state.cart;
+    const selectedThumb = designContext.state.selectedThumb;
+    const firstDesign = designContext.state.firstDesign;
+    // const handleDesignChange = designContext.state.handleDesignChange;
+    
+    const dispatch = designContext.dispatch;
+    let loading=  designContext.state.designLoading;
+
+    console.log(designDetails);
+
+    let imgsrc= designDetails!==''? "https://explorug.com/v2/" + designDetails.RenderingProperties.RenderedImagePath: '';
+    
+
+    const Intensity = (rgb)=> {
         if (rgb[0] === "#") {
             rgb = rgb.slice(1);
             rgb = parseInt(rgb, 16);
@@ -27,122 +73,175 @@ class FullDesign extends Component {
         var b = rgb & 0xFF;
         return (r + g + b) / 3;
     }
-    getTextColorClass(color){
-        var textClass = this.Intensity(color) > 128 ? "goBlack":"";
-        return textClass;
-    }
-    getTextColor(color){
-        var textColor = this.Intensity(color) > 128 ? "#000":"#fff";
+    const getTextColor = (color)=>{
+        var textColor = Intensity(color) > 128 ? "#000":"#fff";
         return textColor;
     }
-    closePopup(){
-        this.props.handleClose();
-    }
-    getDesignName=(designPath)=>{
+    const getDesignName =(designPath)=>{
         var dotpos = designPath.lastIndexOf('.');
         var slashpos = designPath.lastIndexOf('/') +1;
         var roomName = designPath.substr(slashpos, dotpos-slashpos);
         return roomName;
     }
-    showNextDesign(){
-        this.props.handleDesignChange('next');
+    let designName = getDesignName(selectedDesign);
+    
+    const closePopup = () => {
+        dispatch({
+            type: 'set_selectedDesign',
+            payload: ''
+        });
     }
-    showPrevDesign(){
-        this.props.handleDesignChange('prev');
+    const handleAddToCart =(imgSrc, selectedDesign)=>{
+        return new Promise((resolve, reject)=>{
+            let alreadyInCart = utilityFn.alreadyInCart(selectedDesign, cart) ? true:false;
+            if(!alreadyInCart){
+                addDesignToCart(imgSrc, selectedDesign).then(()=>{
+                    console.log('to buy design now');
+                    resolve(true);
+                });
+            }
+            else{
+                resolve(true);
+            }
+        })
     }
-    handleImageLoaded =()=>{
-            this.props.handleFullDesignLoading(false);     
+   
+    const addDesignToCart = (fulldesignSrc, selectedDesign)=>{
+        return new Promise((resolve, reject) => {
+            let designToAdd = selectedDesign;
+            let designCart = cart;
+           // let selectedThumb = selectedThumb;
+    
+            designCart.push({design:designToAdd, thumb: selectedThumb, fullDesign: fulldesignSrc});
+    
+            cart = designCart;
+            console.log('addDesignToCart')
+            console.log(cart);
+            resolve();
+           
+        });
     }
-    handleBuyThis=(imgsrc, selectedDesign)=>{
-        this.props.handleBuyThis(imgsrc, selectedDesign);
+    
+    const handleCart = (imgSrc, selectedDesign) =>{
+        console.log('selectedThumb '+ selectedThumb)
+            handleAddToCart(imgSrc, selectedDesign).then((added)=>{
+                console.log('state of cart');
+                console.log(cart);
+                window.localStorage.setItem('cart', JSON.stringify(cart));
+                dispatch({
+                    type: 'set_cart',
+                    payload: cart
+                });
+                dispatch({
+                    type: 'set_inCart',
+                    payload: added
+                });
+            }) 
+            
     }
-    handleAddToCart=(imgsrc,selectedDesign)=>{
-        this.props.handleAddToCart(imgsrc, selectedDesign);
+    
+    const handleImageLoaded = ()=>{
+        dispatch({type: 'set_designLoading', payload: false})
+        //loading = false;
     }
-    getBtnClass(InCart){
-        var btnClass = "btn btn-sm btn-primary cartbtn";
-        btnClass = InCart ?  btnClass + ' itemincart ': btnClass;
-        return btnClass;
+    const showNextDesign = ()=>{
+      handleDesignChange('next');
     }
-    render() {
-        let InCart = this.props.InCart
-        let selectedDesign = this.props.selectedDesign;
-        let designName = this.getDesignName(selectedDesign);
-        let designDetails = this.props.designDetails;
-        let domain = "https://explorug.com/v2/";
-        let imgsrc= domain+ designDetails.RenderingProperties.RenderedImagePath;
-        return (
-            <div className="container-fluid popupareawrapper">
-                <Row>
-                    <Col lg={{ span: 8, offset: 2 }} md={{ span: 10, offset: 1 }} sm={{ span: 10, offset: 1 }} xm={10}>
-                        <Row className="myrow" id="popuparea">
-                            <BusySignal show={this.props.busy}></BusySignal>
-                            <div id="closePopUp" onClick={this.closePopup}><img alt="close button icon" src= {closeBtn} width="20" /></div>
-                            <div id="navPrev" title="PREVIOUS" onClick={this.showPrevDesign}>
-                                <img alt="previous icon" src={prevImg} width="30" />
-                            </div>
-                            <div id="navNext" title="NEXT" onClick={this.showNextDesign}>
-                                <img src={nextImg} width="30" alt="Next icon"/>
-                            </div>
-                            <Col xs={11} className="designdisplay">
-                                <Col lg={4} md={4} sm={3} xs={4} className="largeimg nopadding">
-                                    <div>
-                                        {
-                                            designDetails ? 
-                                            <img alt="Macrophys" id="largeImg" 
-                                                data-name={selectedDesign} 
-                                                src={imgsrc}
-                                                onLoad={this.handleImageLoaded.bind(this)}
-                         
-                                            />
-                                            : null
-                                        }
-                                    </div>
-                                </Col>
-                                <Col lg={3} md={3} sm={3} xs={2} className="colorPatchCol">
+    const showPrevDesign = (e)=>{
+        console.log(e.target.attributes)
+        if(!firstDesign) handleDesignChange('prev');
+    }
+    
+    return (
+        <div>
+            {designDetails===''?
+            null:
+            <PopupWrapper id="popupWrapper">
+            <Row >
+                <Col lg={{ span: 8, offset: 2 }} md={{ span: 10, offset: 1 }} sm={{ span: 10, offset: 1 }} xm={10}>
+                    <PopupArea id="popupArea">
+                        <BusySignal className="BusySignal" show={loading}></BusySignal>
+                        <ClosePopup onClick={closePopup}>
+                            <img alt="close button icon" src={closeBtn} width="20"/>
+                        </ClosePopup>
+                        <NavBtn prev onClick={showPrevDesign} disabled = {firstDesign ? 'disabled':null} >
+                            <img alt="previous icon" src={prevImg} width="30" />
+                        </NavBtn>
+                        <NavBtn onClick={showNextDesign}>
+                            <img alt="next icon" src={nextImg} width="30" />
+                        </NavBtn>
+                        <DesignDisplay xs={11}>
+                            <Col lg={4} md={4} sm={3} xs={4} className="nopadding" >
+                                <div>
+                                    <LargeImg
+                                        src={imgsrc}
+                                        data-name={selectedDesign}  
+                                        onLoad={handleImageLoaded}
+                                    />
+                                
+                                </div>
+                            </Col>
+                            <ColorPatchCol>
                                 {
                                     designDetails.DesignColors.length>0?
                                     designDetails.DesignColors.map((color, index)=>
                                         <div  key={index}>
-                                            <Colorpatch backgroundColor={color.Color} textColor = {this.getTextColor(color.Color)}>
+                                            <Colorpatch backgroundColor={color.Color} textColor = {getTextColor(color.Color)}>
                                                 <div>{color.ColorName}</div>
                                             </Colorpatch>
                                         </div>
                                     )
                                     :null
                                 }
-                                </Col>
-                                <Col lg={5} md={8} sm={10} xs={10} className="textureimgarea nopadding">
-                                    <div id="designInfo" className="shareSpace">                
-                                        <div className="designInfoName"> {designName} </div>
-                                        
-                                    </div>
-                                    <div id="cartOptions">
-                                        <Col id="buythis" lg={7} md={7} sm={6} xs={10} onClick={()=>this.handleBuyThis(imgsrc, selectedDesign)}>
-                                        <div className={this.getBtnClass(InCart)}>
+                            </ColorPatchCol>
+                            <DesignNameArea>
+                                <DesignInfo>
+                                    <DesignInfoName>
+                                        {designName}
+                                    </DesignInfoName>
+                                </DesignInfo>
+                                <CartOptions>
+                                    <CartBtnWrap background = "#B398CE" onClick={()=> handleCart(imgsrc, selectedDesign)}>
+                                    
+                                    <Link to={{
+                                        pathname: '/checkout'
+                                       
+                                        }}>
+                                        <CartBtn incart={inCart.toString()}>
                                             <span>
                                                 BUY
                                             </span>
                                             <span>DESIGN</span>
                                             <br/><div style={{fontSize:'18px'}}>$ 1</div>
-                                        </div>
-                                        </Col>
-                                        <Col id="addtocart" lg={5} md={5} sm={6} xs={10} onClick={()=>this.handleAddToCart(imgsrc, selectedDesign)}>
-                                            <div className={this.getBtnClass(InCart)}>
-                                                <div style={{fontSize:'18px'}} > +</div>
-                                                <div>CART</div>
-                                            </div>
-                                        </Col>
-                                    </div>
-                                </Col>
-                            </Col>
-                            
-                        </Row>
-                    </Col>
-                </Row>
-            </div>
-        );
-    }
-}
+                                        </CartBtn>
+                                    </Link>
+                                    {/* <CartBtn incart={inCart.toString()} onClick={goToCheckout} href="/checkout">
+                                            <span>
+                                                BUY
+                                            </span>
+                                            <span>DESIGN</span>
+                                            <br/><div style={{fontSize:'18px'}}>$ 1</div>
+                                    </CartBtn> */}
+                                        
+                                    </CartBtnWrap>
+                                    <CartBtnWrap background = "#DB97DB" onClick={()=> handleCart(imgsrc, selectedDesign)}>
+                                        <CartBtn incart ={inCart.toString()}>
+                                            <div style={{fontSize:'18px'}} > +</div>
+                                            <div>CART</div>
+                                        </CartBtn>
+                                    </CartBtnWrap>
+                                </CartOptions>
+                            </DesignNameArea>
+
+                        </DesignDisplay>
+                    </PopupArea>
+                </Col>
+            </Row>
+        </PopupWrapper>
+            }
+        </div>
+        
+    );
+};
 
 export default FullDesign;

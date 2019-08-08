@@ -1,25 +1,27 @@
-import React, { Component } from 'react';
-import {Badge} from 'react-bootstrap';
+import React, {useContext} from 'react';
+import {FilterBadge} from './StyledComponents';
 
-class DesignsFilter extends Component {
-    render() {
-        const filters = this.props.filters;
-        return (
-            <div>
+import {WholeContext} from '../App';
+
+
+function DesignsFilter(){
+    // const filterContext = useContext(FilterContext);
+    // let filters = filterContext.selectedFilters;
+
+    const filterContext = useContext(WholeContext);
+    let filters = filterContext.state.selectedFilters;
+
+    return (
+         <div>
                 {
                     filters.length ?
                         filters.map((filter)=>
-                            <Badge variant="secondary" 
-                                key={filter}
-                                className="selectedFilter"
-                            >
-                                {filter.replace('Designs/','')}
-                            </Badge>
+                            <FilterBadge key={filter}>
+                            {filter.replace('Designs/','')}
+                            </FilterBadge>
                         ):null
                 }
             </div>
-        );
-    }
+    )
 }
-
 export default DesignsFilter;

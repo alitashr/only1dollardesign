@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {ContentLoadingSignal} from './StyledComponents';
 
 class BusySignal extends Component {
     busyLoader = {
@@ -8,7 +9,7 @@ class BusySignal extends Component {
     render() {
         let show = this.props.show;
         return (
-             <div className="contentLoadingSingle" style={show ? this.busyLoader:null}></div>
+             <ContentLoadingSignal style={show ? this.busyLoader:null}></ContentLoadingSignal>
         );
     }
 }

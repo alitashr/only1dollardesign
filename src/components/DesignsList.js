@@ -1,62 +1,44 @@
-import React, {Component} from 'react';
-import {Col, Row} from 'react-bootstrap';
+import React, {useContext} from 'react';
+import {DesignsArea, DesignThumb} from './StyledComponents';
 import BusySignal from './BusySignal';
 
-class DesignsList extends Component {
+import {DesignContext} from '../App';
+import {WholeContext} from '../App';
+
+const DesignsList = () => {
     
-    nextPage = ()=>{
-        this.props.handleBusySignal(true);
-        this.props.pageChange('next');
-    }
-    prevPage = ()=>{
-        this.props.handleBusySignal(true);
-        this.props.pageChange('prev');
-    }
-    selectDesign=(event)=>{
-        let selectedDesign = event.target.getAttribute('data-name');
-        let selectedThumb = event.target.getAttribute('src');
-        this.props.selectDesign(selectedDesign, selectedThumb);
-    }
-    handleImageLoaded =()=>{
-        if(this.props.busy)
-            this.props.handleBusySignal(false);     
-    }
+    const designContext = useContext(DesignContext);
+    let selectDesign = designContext.selectDesign;
    
-    render() {
-        var thumbs= this.props.designThumbs || [];
-        let showBusySignal = this.props.busy;
-        return ( 
-        <React.Fragment>
-        <div className = "container-fluid" >
-            <Row id="designsArea">
-            <BusySignal show={showBusySignal}></BusySignal>
-                {
+    const wholeContext = useContext(WholeContext);   
+    let thumbs = wholeContext.state.designThumbs;
+    let showContentLoadingSignal = wholeContext.state.showContentLoadingSignal;
+
+    const handleClick =e =>{
+        let selectedDesign = e.target.getAttribute('data-name');
+        let selectedThumb = e.target.getAttribute('src');
+        console.log(selectedDesign, selectedThumb);
+        
+        selectDesign(selectedDesign, selectedThumb);
+        
+    }
+    console.log(showContentLoadingSignal)
+    return (
+        <DesignsArea>
+            {showContentLoadingSignal? <BusySignal show={true}></BusySignal>: null}
+            {
                     thumbs.length>0 ? 
                     thumbs.map((thumb, index)=>
-                    <Col  key={index} lg = {4} md = {4} sm = {4} xs = {10} className = "thumbs">
+                    <DesignThumb  key={index} lg = {4} md = {4} sm = {4} xs = {10} className = "thumbs">
                     <div>
                         <img data-name={thumb.Name} 
-                            onClick={(e)=>this.selectDesign(e)} 
-                            onLoad={this.handleImageLoaded.bind(this)}
+                            onClick={handleClick}
                             src={"https://explorug.com/v2/"+thumb.Value}/></div>
-                    </Col>)
+                    </DesignThumb>)
                     :null
                 }
-            </Row>
-            <div className="pager">
-                <div className={this.props.currentPage>0 ? null:"disabled"}>
-                    <span onClick={this.prevPage}>‹</span>
-                </div>
-                <div>
-                    <span onClick={this.nextPage}>›</span>
-                </div>
-            </div>            
-            </div>
-           
-        </React.Fragment>
-        
-        );
-    }
-}
+        </DesignsArea>
+    );
+};
 
 export default DesignsList;

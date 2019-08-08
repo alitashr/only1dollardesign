@@ -1,85 +1,78 @@
-import React, { Component } from 'react';
-import {Dropdown} from 'react-bootstrap';
+import React, {useContext} from 'react';
+
+
+import {DesignContext} from '../App';
+import {WholeContext} from '../App';
+
+import { Dropdown } from 'react-bootstrap';
 import DropdownItem from 'react-bootstrap/DropdownItem';
 
-class DesignCategory extends Component {
-    constructor(props) {
-        super(props);
-        this.handleClick = this.handleClick.bind(this);
-        this.state = {
-            filters :this.props.filters,
-            selectedFilters:[],
-            selectAll:true
-        }
-    }
+import {FilterToggle,
+    FilterMenu,
+    FilterItem} from './StyledComponents';
+
+const DesignCategory = () => {
     
-    handleClick(e){
-        e.preventDefault();
-        var selectAll = true;
+    const filterContext = useContext(DesignContext);
+    const selectCategory = filterContext.selectCategory;
+
+    const wholeContext = useContext(WholeContext);
+    const filters = wholeContext.state.designCategories;
+    const selectedFilters = wholeContext.state.selectedFilters;
+    const dispatch = wholeContext.dispatch;
+    
+    const handleClick = e =>{
         const categorySelected = e.target.getAttribute('value');
-        var filterList = this.state.selectedFilters;
-        
-        if(categorySelected.toLowerCase() === "all"){
-            if(filterList.length)
-                filterList =[];
-            else
-                return;
+        // console.log(categorySelected);
+        // console.log(e.target.classList.contains('filteroptionsactive'));
+        let filterList = selectedFilters;
+        if(categorySelected.toLowerCase()==='all'){
+            filterList =[];
         }
-        else if(filterList.indexOf(categorySelected)>=0 )
-        {
+        else if(e.target.classList.contains('filteroptionsactive')){
             e.target.classList.toggle('filteroptionsactive');
             filterList = filterList.filter(function(item) {
                 return item.toLowerCase() !== categorySelected.toLowerCase()
-              });
-            selectAll = filterList.length ? false: true;
+            });
         }
         else{
             filterList.push(categorySelected);
-            selectAll = false;
         }
-        this.setState({
-            selectedFilters:filterList,
-            selectAll: selectAll
-        });
-        this.props.handleClick(filterList);
+        selectCategory(filterList);
     }
-    render() {
-        const filters = this.props.filters;
-        return (
-            <div id="filterarea">
+    return (
+        <div>
             <Dropdown>
-                <Dropdown.Toggle  id="dropdown-basic" className="filteroptions">
+                <FilterToggle>
                     Category
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
+                </FilterToggle>
+                <FilterMenu>
                 {
                     filters.length>0 ? 
                         filters.map((filter, index)=> 
-                            <DropdownItem 
+                            <FilterItem 
                                 key={index}
                                 value={filter.FullPath} 
-                                onClick={this.handleClick} 
-                                className={this.state.selectedFilters.indexOf(filter.FullPath)>=0 ? "filteroptionsactive":null}
+                                onClick ={handleClick}
+                                className = {selectedFilters.indexOf(filter.FullPath)>=0 ? "filteroptionsactive":null}
                                 >
                                 {filter.Name}
-                            </DropdownItem>
+                            </FilterItem>
                         )
                         : null
                 }
-                <DropdownItem 
+                <FilterItem 
                     key="All"
                     value="All" 
-                    onClick={this.handleClick} 
-                    className= {this.state.selectAll? "filteroptionsactive":null}
+                    onClick ={handleClick}
+                    className = {selectedFilters.length ? null: "filteroptionsactive"}
                     >
                     All
-                </DropdownItem>   
-                </Dropdown.Menu>
+                </FilterItem>   
+                </FilterMenu>
             </Dropdown>
-            
-            </div>
-        );
-    }
-}
+        </div>
+    );
+};
 
 export default DesignCategory;

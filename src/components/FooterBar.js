@@ -1,31 +1,55 @@
-import React, { Component } from 'react';
+import React, {useContext} from 'react';
 import {Navbar, Nav} from 'react-bootstrap';
 import logo from '../images/logo.png';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import HomePage from './HomePage';
+import {NavBar, NavbarBrand, BasicNavbarNav, NavLink,NavLinkP,  NavCart} from './StyledComponents';
+import { Link } from "react-router-dom";
 
-class FooterBar extends Component {
-    render() {
-        return (
-            
-            <div>
-               <Navbar bg="light" expand="sm" fixed="bottom">   
-                <Navbar.Brand href="#home" id="logoarea" className="pull-left"><img src={logo} alt="logo"/> </Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav">
+import {WholeContext} from '../App';
+
+const FooterBar = (props) => {
+    const checkoutContext = useContext(WholeContext); 
+    let cart = checkoutContext.state.cart;
+    const {openTou} = props;
+console.log('...footer bar...');
+
+    return (
+        <div>
+        <NavBar expand="md" fixed="bottom" background="#fff">  
+
+            <NavbarBrand href="#home" pullleft="true">
+                <img src={logo} alt="logo"/> 
+            </NavbarBrand> 
+                {/* <NavbarBrand href="#home" id="logoarea" className="pull-left"></Navbar.Brand> */}
+                <Navbar.Toggle aria-controls="basic-navbar-nav" /> 
+                
+                <BasicNavbarNav>
                     <Nav className="mr-auto">
-                    <Link to="/" className="nav-link">Designs</Link>
-                    <Link to="/faq" className="nav-link">FAQ</Link>
-                    <Nav.Link href="">Terms Of Use</Nav.Link>
-                    <Nav.Link href="#cart">Your cart is empty</Nav.Link>
+                        <NavLink href="/">Designs</NavLink>
+                        <NavLink href="/faq">FAQ</NavLink>
+                        
+                        <NavLink href="" onClick={openTou}>Terms Of Use</NavLink>
+                        {
+                                cart.length?
+                                <NavLinkP background="#B398CE" to ={{pathname: '/checkout'}} >
+                                    <NavCart >
+                                        <div>
+                                        <span style={{fontSize:16}}>$ {cart.length}.00</span>                            
+                                        <div style={{fontSize:11}}>Total</div>
+                                        </div>
+                                    </NavCart>
+                                
+                                </NavLinkP>
+                                :
+                                <NavLink disabled>
+                                <span>Your cart is empty</span>
+                                </NavLink>
+                                
+                        }
                     </Nav>
-                </Navbar.Collapse>
-                </Navbar> 
-            </div>
-            
-
-        );
-    }
-}
+                </BasicNavbarNav>
+                </NavBar> 
+        </div>
+    );
+};
 
 export default FooterBar;
