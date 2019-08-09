@@ -136,7 +136,7 @@ const App = ()=> {
       });
   },[]);
   useEffect(()=>{
-    let localCart = window.localStorage.getItem('cart') || "[]";
+    let localCart = window.sessionStorage.getItem('cart') || "[]";
     
     dispatch({
       type: 'set_cart',

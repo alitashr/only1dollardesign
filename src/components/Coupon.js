@@ -1,4 +1,4 @@
-import React, {useReducer, useContext} from 'react';
+import React, {useReducer, useContext,useEffect} from 'react';
 import { Col, Form} from 'react-bootstrap';
 import styled from 'styled-components';
 import axios from 'axios';
@@ -18,7 +18,8 @@ const couponForm = {
     email:'',
     retypedEmail:'',
     couponTotalAmt:0,
-    errorMsg: ''
+    errorMsg: '',
+    couponSuccess: false
 }
 const formReducer = (state, action)=> {
     switch(action.type){
@@ -47,6 +48,24 @@ const formReducer = (state, action)=> {
                 ...state,
                 errorMsg: action.payload
             }
+        case 'set_couponSuccess':
+            return{
+                ...state,
+                couponSuccess: action.payload
+            }
+        case 'set_couponTotalAmt':
+            return{
+                ...state,
+                couponTotalAmt: action.payload
+            }
+        case 'set_formData':
+            return{
+                ...state,
+                code: action.payload.code,
+                name: action.payload.name,
+                email:action.payload.email,
+                retypedEmail: action.payload.retypedEmail,
+            }
         default:
             return state
        
@@ -58,9 +77,8 @@ const checkCoupon = (code, total)=>{
         data.append("action", "checkcoupon");
         data.append("id",code);
         data.append("total",total);
-        axios.post('http://alternative.com.np/atcurrency/atapp.php?action=checkcoupon&id='+code+'&total='+total)
+        axios.post('/atcurrency/atapp.php?action=checkcoupon&id='+code+'&total='+total,  { crossdomain: true })
         .then(response =>{
-            console.log(response)
             resolve(response.data);
         })
         .catch(error=>{
@@ -72,9 +90,23 @@ const CouponForm = styled(Col)`
     margin:auto;
 `
 const CouponInfo = styled.div`
-text-align: center;
-font-size: 16px;
-padding: 10px;
+
+`
+const CouponSuccess = styled(CouponForm)`
+    text-align: center;
+    font-size: 1em;
+    padding: 10px;
+    line-height:2;
+    &>div{
+        font-size: 1.2em;
+        margin: 15px;
+    }
+    &>div>span{
+        font-size: 0.9em;
+    }
+    & .thanku {
+        font-size: 2em;
+    }
 `
 
 const Coupon = () => {
@@ -84,6 +116,32 @@ const Coupon = () => {
     let cartDispatch = checkoutContext.dispatch;
 
     const [state, dispatch] = useReducer(formReducer, couponForm);
+
+    useEffect(()=>{
+        if(state.code!==''){
+            checkCoupon(state.code, 0).then((response)=>{
+                if(response.state){ //coupon valid
+                    dispatch({
+                        type:'set_couponTotalAmt',
+                        payload: response.value
+                    });
+                }
+            });
+        }
+    }, [state.code]);
+    useEffect(()=>{
+        var formData = window.sessionStorage.getItem('couponFormdata')||'';
+        
+        if(formData!==''){
+            console.log(formData)
+            var jsonData= JSON.parse(formData);
+            dispatch({
+                type: 'set_formData',
+               payload: jsonData 
+            });
+        }
+        
+    },[])
     const handleCoupon =(e)=>{
         let val = e.target.value;
         console.log('value is '+ val);
@@ -128,7 +186,6 @@ const Coupon = () => {
             type:'set_errorMsg',
             payload: err
         });
-
     }
     const verifyForm=() =>{
         if(state.errorMsg!==''){
@@ -148,16 +205,78 @@ const Coupon = () => {
             console.log(state.code, cart.length);
             checkCoupon(state.code, cart.length).then((data)=>{
                 console.log(data);
-
+                let response = data;
+                dispatch({
+                    type:'set_couponSuccess',
+                    payload: response.state
+                });
+                if(response.state){ //payment successful
+                    emptyCart();
+                    storeFormInSession();
+                    dispatch({
+                        type:'set_couponTotalAmt',
+                        payload: response.value
+                    });
+                }
+                else{ ////payment unsuccessful
+                    const errVal = response.state? errorMsgs[2]:errorMsgs[1]
+                    dispatch({
+                        type:'set_errorMsg',
+                        payload: errVal
+                    });
+                }
             })
         }
     }
+    const emptyCart =()=>{
+        var newCart=[];
+        window.sessionStorage.setItem('cart', JSON.stringify(newCart));
+        cartDispatch({
+            type:'set_cart',
+            payload: newCart
+        });         
+    }
+    const storeFormInSession=()=>{
+        var store= {
+            code:state.code,
+            name:state.name,
+            email:state.email,
+            retypedEmail:state.retypedEmail
+        }
+        window.sessionStorage.setItem('couponFormdata', JSON.stringify(store));
+    }
+
     return (
         <Col lg={{ span: 8, offset: 2 }} md={{ span: 8, offset: 2 }} sm={{ span: 8, offset: 1 }} xm={12}>
             <CategoryTitle marginBottom='2em'>
                     <span>Checkout using coupon</span>  
             </CategoryTitle>
-            <CouponForm sm={{span:6}}>
+            {
+                state.couponSuccess?
+                <CouponSuccess>
+                    <div>
+                        <span>
+                        PURCHASE COMPLETE
+                        <br/>
+                        TOTAL PAYMENT:
+                        </span>
+                        ${cart.length}.00
+                    </div>
+                    <div className="thanku">THANK YOU!</div>
+                    <CouponMsg style={{fontSize:16}}>
+                            You will shortly recieve an email with the download link.<br/>
+                            Do not forget to check spam/junk as well
+                    </CouponMsg>
+                
+                <div>
+                    <span>COUPON BALANCE AFTER CHECKOUT</span><br/>
+                    ${state.couponTotalAmt}.00
+                
+                </div>
+                </CouponSuccess>
+                :
+
+                <CouponForm sm={{span:6}}>
             <Form onSubmit={submitForm}>
                 <Form.Group>
                 <Input type={'text'}
@@ -249,6 +368,8 @@ const Coupon = () => {
             <GeneralInfo/>
             </Form>
             </CouponForm>
+            }
+            
        </Col>
     );
 };

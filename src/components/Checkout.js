@@ -7,8 +7,7 @@ import {CheckoutButton, CartItemWrapper, CartIndex, CartDesignThumb, CartInfo, R
 import {WholeContext} from '../App';
 import GeneralInfo from './GeneralInfo';
 
-const Checkout = (props) => {
-    console.log(props)
+const Checkout = () => {
     
     const checkoutContext = useContext(WholeContext);
     
@@ -30,7 +29,7 @@ const Checkout = (props) => {
         designcart.splice(index, 1);
         console.log(designcart)
         cart = designcart;
-        window.localStorage.setItem('cart', JSON.stringify(cart));
+        window.sessionStorage.setItem('cart', JSON.stringify(cart));
         dispatch({
             type: 'set_cart',
             payload: cart

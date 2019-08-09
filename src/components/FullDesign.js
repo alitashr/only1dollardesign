@@ -127,7 +127,7 @@ const FullDesign = (props) => {
             handleAddToCart(imgSrc, selectedDesign).then((added)=>{
                 console.log('state of cart');
                 console.log(cart);
-                window.localStorage.setItem('cart', JSON.stringify(cart));
+                window.sessionStorage.setItem('cart', JSON.stringify(cart));
                 dispatch({
                     type: 'set_cart',
                     payload: cart
