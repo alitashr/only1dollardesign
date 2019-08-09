@@ -6,9 +6,10 @@ import {CategoryTitle, CouponMsg} from './StyledComponents';
 const ThankyouPage = () => {
     return (
         <Col lg={{ span: 8, offset: 2 }} md={{ span: 8, offset: 2 }} sm={{ span: 8, offset: 1 }} xm={12}>
-                <CategoryTitle marginBottom='2em'>
-                    <span>Thank you</span>  
-                </CategoryTitle>
+                <CategoryTitle 
+                marginBottom='2em'
+                text={"Thank you"}/>
+             
                 <CouponMsg>
                     This link to download the designs will be active shortly.
                         <div>

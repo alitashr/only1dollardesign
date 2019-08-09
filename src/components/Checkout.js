@@ -62,10 +62,9 @@ const Checkout = () => {
     
     return (
             <Col lg={{ span: 8, offset: 2 }} md={{ span: 8, offset: 2 }} sm={{ span: 8, offset: 1 }} xm={12}>
-                <CategoryTitle>
-                    <span>Your Cart</span>  
-                </CategoryTitle>
-               
+                
+                <CategoryTitle  text={"Your Cart"}/>
+                
                 <Row>
                 <Col lg={3} md={3} sm={12} xs={12} style={{paddingBottom:"30px"}}>
                         The designs hosted on this site are royalty-free and ready to be used in a variety of applications.                

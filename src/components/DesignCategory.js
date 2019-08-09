@@ -5,7 +5,6 @@ import {DesignContext} from '../App';
 import {WholeContext} from '../App';
 
 import { Dropdown } from 'react-bootstrap';
-import DropdownItem from 'react-bootstrap/DropdownItem';
 
 import {FilterToggle,
     FilterMenu,
@@ -42,7 +41,7 @@ const DesignCategory = () => {
     }
     return (
         <div>
-            <Dropdown>
+            <Dropdown style={{textAlign:"right"}}>
                 <FilterToggle>
                     Category
                 </FilterToggle>

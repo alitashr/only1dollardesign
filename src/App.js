@@ -235,7 +235,7 @@ const handleDesignChange = (direction)=>{
     }
 }
   return (
-    <div className="App">
+    <div className="App" style={{padding:'0 1em'}}>
        <WholeContext.Provider value={{ state, dispatch }}>
 
             <DesignContext.Provider value={{            
@@ -251,8 +251,7 @@ const handleDesignChange = (direction)=>{
                 <Switch>
                 <Route exact path='/' component={DesignsPage} />
                 <Route exact path='/faq' component={FAQ}/>  
-                <Route exact path='/checkout'  component = {Checkout}
-                />
+                <Route exact path='/checkout'  component = {Checkout}/>
                 <Route exact path = '/thank' component={ThankyouPage}/>
                 <Route exact path='/coupon' component={Coupon}/>  
                 

@@ -7,9 +7,11 @@ import {CategoryTitle, FAQBlock, FooterLinks} from './StyledComponents';
 const FAQ = () => {
     return (
         <Col lg={{ span: 8, offset: 2 }} md={{ span: 8, offset: 2 }} sm={{ span: 8, offset: 1 }} xm={12}>
-                <CategoryTitle marginBottom='2em'>
-                    <span>FREQUENTLY ASKED QUESTIONS (FAQ)</span>  
-                </CategoryTitle>
+                <CategoryTitle 
+                text="FREQUENTLY ASKED QUESTIONS (FAQ)"
+                marginBottom='2em'
+                />
+                
                 <FAQBlock>
                     <h4>What is Only1dollardesign.com all about?</h4>
                     <p>Only1dollardesign.com is a source of unique designs for your inspiration. It features royalty-free designs, ready to be used in a variety of applications. You will find patterns for flooring, rug designs, wall to wall carpet designs, wallpaper designs, fabric designs, textile patterns, patterns for interior design and patterns for customizing personal accessories, along with illustrations of the patterns in use. The designs are color-separated, and can be easily customized to fit your personal taste and industry that you intend to apply the designs to.</p>

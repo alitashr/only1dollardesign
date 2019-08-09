@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 import {Badge, Col, Dropdown, Row, Button, Navbar, Nav} from 'react-bootstrap';
 
@@ -491,7 +492,14 @@ const RemoveDesign = styled.div`
     right: 10px;
     bottom: 10px;
 `
-const CategoryTitle = styled.div`
+
+const Title = (props)=>(
+    <div {...props}>
+        <span>{props.text}</span>
+    </div>
+)
+
+const CategoryTitle = styled(Title)`
   text-align: center;
   color: #ABBDC9;
   text-transform: uppercase;
@@ -557,6 +565,7 @@ const CouponMsg  = styled.div`
     color: rgb(255,126,28);
     text-align: center;
     text-transform: none;
+    font-size:1em;
     &>.designDownloadLink{
         color: #337ab7;
         text-decoration: none;

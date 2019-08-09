@@ -248,9 +248,11 @@ const Coupon = () => {
 
     return (
         <Col lg={{ span: 8, offset: 2 }} md={{ span: 8, offset: 2 }} sm={{ span: 8, offset: 1 }} xm={12}>
-            <CategoryTitle marginBottom='2em'>
-                    <span>Checkout using coupon</span>  
-            </CategoryTitle>
+            <CategoryTitle  
+                text={"Checkout using coupon"}
+                marginBottom='2em'
+            />
+             
             {
                 state.couponSuccess?
                 <CouponSuccess>
