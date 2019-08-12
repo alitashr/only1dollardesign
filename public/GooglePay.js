@@ -148,8 +148,8 @@ function getGooglePaymentDataRequest() {
   paymentDataRequest.merchantInfo = {
     // @todo a merchant ID is available for a production environment after approval by Google
     // See {@link https://developers.google.com/pay/api/web/guides/test-and-deploy/integration-checklist|Integration checklist}
-    // merchantId: '01234567890123456789',
-    merchantName: 'Example Merchant'
+    merchantId: '02961746533601870329',
+  //  merchantName: 'Example Merchant'
   };
   paymentDataRequest.callbackIntents = ["PAYMENT_AUTHORIZATION"];
 
