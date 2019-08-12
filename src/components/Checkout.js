@@ -1,6 +1,7 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { Link } from "react-router-dom";
+// import {addGooglePayBtn, onGooglePayLoaded} from './GooglePay';
 
 import {CheckoutButton, CartItemWrapper, CartIndex, CartDesignThumb, CartInfo, RemoveDesign, CategoryTitle, CartIsNowEmpty, BtnLink} from './StyledComponents';
 
@@ -8,7 +9,7 @@ import {WholeContext} from '../App';
 import GeneralInfo from './GeneralInfo';
 
 const Checkout = () => {
-    
+    console.log('----in checkout---')
     const checkoutContext = useContext(WholeContext);
     
     let cart = checkoutContext.state.cart;
@@ -16,6 +17,13 @@ const Checkout = () => {
 
     cart = cart ? cart:[];
 
+    useEffect(()=>{
+        console.log('----in checkout--- useeffect');
+        //addGooglePayBtn();
+        window.addGooglePayButton();
+        //document.getElementById('googlePayContainer').appendChild(window.payBtn);
+    }, []);
+    
     const getDesignName = (designPath)=>{
         var dotpos = designPath.lastIndexOf('.');
         var slashpos = designPath.lastIndexOf('/') +1;
@@ -115,6 +123,10 @@ const Checkout = () => {
                     }
                         <Col lg={5} md={5} sm={6} xs={12}>
                             <center>
+                            <div id="googlePayContainer" style={{marginBottom:'1em'}}>
+                                    {/* <div dangerouslySetInnerHTML={{ __html: window.payBtn.innerHTML }} />; */}
+                                    </div>  
+
                                 {cart.length>0 ? 
                                     <div>
                                         <CheckoutButton onClick={checkOutAction}>
@@ -140,9 +152,10 @@ const Checkout = () => {
                                         </CheckoutButton>    
                                     </div>
                                     }
-                                
+                                     
                                 <GeneralInfo/>
                             </center>
+                            
                         </Col>
                     </Row>
                 </Col>
