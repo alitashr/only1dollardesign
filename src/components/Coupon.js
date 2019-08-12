@@ -77,7 +77,7 @@ const checkCoupon = (code, total)=>{
         data.append("action", "checkcoupon");
         data.append("id",code);
         data.append("total",total);
-        axios.post('/atcurrency/atapp.php?action=checkcoupon&id='+code+'&total='+total,  { crossdomain: true })
+        axios.post('http://alternative.com.np/atcurrency/atapp.php?action=checkcoupon&id='+code+'&total='+total)
         .then(response =>{
             resolve(response.data);
         })
