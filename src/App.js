@@ -1,5 +1,5 @@
 import React, {useEffect, useReducer} from 'react';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { HashRouter  as Router, Switch, Route } from "react-router-dom";
 
 import './App.css';
 
@@ -248,7 +248,7 @@ const handleDesignChange = (direction)=>{
             }}>
                 
             <Router>
-                <Switch>
+                {/* <Switch> */}
                 <Route exact path='/' component={DesignsPage} />
                 <Route exact path='/faq' component={FAQ}/>  
                 <Route exact path='/checkout'  component = {Checkout}/>
@@ -256,7 +256,7 @@ const handleDesignChange = (direction)=>{
                 <Route exact path='/coupon' component={Coupon}/>  
                 
                 {/* render={ (props) => <Checkout data= {state.cart} {...props} removeItemFromCart ={removeItemFromCart} />}/> */}
-                </Switch>
+                {/* </Switch> */}
 
                 <SocialMediaShare/>
                 <Copyright id="copyright" textCenter>
@@ -268,8 +268,8 @@ const handleDesignChange = (direction)=>{
                       </div>
                 </Copyright>
                 <FooterBar openTou={openTOU}/>
-            </Router> 
             
+            </Router> 
             </CurrentPageContext.Provider>
 
             </DesignContext.Provider>

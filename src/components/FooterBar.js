@@ -17,7 +17,7 @@ console.log('...footer bar...');
         <NavBar expand="md" fixed="bottom" background="#fff">  
 
             <NavbarBrand href="#home" pullleft="true">
-                <img src={logo} alt="logo"/> 
+               <img src={logo} alt="logo"/> 
             </NavbarBrand> 
                 {/* <NavbarBrand href="#home" id="logoarea" className="pull-left"></Navbar.Brand> */}
                 <Navbar.Toggle aria-controls="basic-navbar-nav" /> 
@@ -25,7 +25,7 @@ console.log('...footer bar...');
                 <BasicNavbarNav>
                     <Nav className="mr-auto">
                         <NavLink href="/">Designs</NavLink>
-                        <NavLink href="/faq">FAQ</NavLink>
+                        <NavLink href="#/faq">FAQ</NavLink>
                         
                         <NavLink href="" onClick={openTou}>Terms Of Use</NavLink>
                         {

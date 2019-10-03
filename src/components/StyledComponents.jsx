@@ -402,7 +402,7 @@ const NavLinkP = styled(BtnLink)`
   cursor: pointer;
   text-transform: uppercase;
   font-weight: 600;
-    color: #444;
+    color:  ${props=> props.color ? props.color: '#444'};
     position: relative;
     background: ${props=> props.background ? props.background: 'none'}
     &:hover{
