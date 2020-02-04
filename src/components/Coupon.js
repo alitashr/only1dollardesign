@@ -301,7 +301,7 @@ const Coupon = () => {
                     title= {'email'} 
                     name= {'email'}
                     value={state.email} 
-                    placeholder = {'Email Address where designs wil be sent'}
+                    placeholder = {'Email Address where designs will be sent'}
                     handleChange = {handleEmail}
                     required
                     />
