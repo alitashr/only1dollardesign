@@ -100,7 +100,9 @@ const Checkout = () => {
             let data = new FormData();
             data.append("itemlist", itemList);
             //axios.post("http://explorug.com/archanastools/niblpayment/O1DDPay.aspx", data)
-            axios.post('http://explorug.com/archanastools/niblpayment/O1DDPay.aspx?itemlist='+itemList)
+            axios.post('http://explorug.com/archanastools/niblpayment/O1DDPay.aspx?itemlist='+itemList+"&return=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fthank"+
+            "&cancel_return=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fhelp&bn=PP%2dBuyNowBF%3abtn_buynow_LG%2egif%3aNonHosted"
+            )
                  .then(response=>{
                      resolve(data);
                 })
