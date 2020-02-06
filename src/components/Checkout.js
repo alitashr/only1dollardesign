@@ -7,6 +7,7 @@ import {CheckoutButton, CartItemWrapper, CartIndex, CartDesignThumb, CartInfo, R
 
 import {WholeContext} from '../App';
 import GeneralInfo from './GeneralInfo';
+import axios from 'axios';
 
 const Checkout = () => {
     console.log('----in checkout---')
@@ -46,15 +47,35 @@ const Checkout = () => {
     }
     const checkOutAction = ()=>{
         var itemList = '';
-        // cart.forEach((element, index) => {
-        //     let i = index+1;
-        //     itemList += '&item_name_'+i+'='+getDesignName(element.design)+'&amount_'+i+'=1'
-            
-        // });
         cart.forEach((element, index) => {
             let i = index+1;
-            itemList += 'item_name_'+i+'='+getDesignName(element.design)+'&amount_'+i+'=1&'
+            itemList += '&item_name_'+i+'='+getDesignName(element.design)+'&amount_'+i+'=1'
             
+        });
+        
+        //for now
+        itemList = itemList!==''? 
+            itemList: 
+            "&item_name_1=Lunazoph&amount_1=1"+
+            "&item_name_2=Mechanic&amount_2=1"+
+            "&item_name_3=Wiros Egolox&amount_3=1";
+
+        console.log(itemList);
+        var link = "https://www.paypal.com/cgi-bin/webscr?currency_code=USD&cmd=_cart&upload=1&business=onlyhundred@explorug.net&lc=US&notify_url=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fipn%2ephp"+
+        itemList+
+        //"&custom=543a385a-cbe8-4aae-bd17-a06e31cc8e93"+
+        "&button_subtype=services&no_note=1&no_shipping=1&rm=1"+
+        "&return=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fthank"+
+        "&cancel_return=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fhelp&bn=PP%2dBuyNowBF%3abtn_buynow_LG%2egif%3aNonHosted";
+        //var link = 'http://192.168.0.176/AT/NIBL/niblpay.aspx?itemlist='+ itemList;
+        console.log(link)
+        window.location = link;
+    }
+    const NIBLcheckOutAction =()=>{
+        var itemList = '';
+        cart.forEach((element, index) => {
+            let i = index+1;
+            itemList += 'item_name_'+i+'='+getDesignName(element.design)+'|amount_'+i+'=1|'
         });
 
         //for now
@@ -65,17 +86,29 @@ const Checkout = () => {
             "&item_name_3=Wiros Egolox&amount_3=1";
 
         console.log(itemList);
-        // var link = "https://www.paypal.com/cgi-bin/webscr?currency_code=USD&cmd=_cart&upload=1&business=onlyhundred@explorug.net&lc=US&notify_url=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fipn%2ephp"+
-        // itemList+
-        // //"&custom=543a385a-cbe8-4aae-bd17-a06e31cc8e93"+
-        // "&button_subtype=services&no_note=1&no_shipping=1&rm=1"+
-        // "&return=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fthank"+
-        // "&cancel_return=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fhelp&bn=PP%2dBuyNowBF%3abtn_buynow_LG%2egif%3aNonHosted";
-        var link = 'http://192.168.0.176/AT/NIBL/niblpay.aspx?itemlist='+ itemList;
-        console.log(link)
-        window.location = link;
+
+        postToNIBL(itemList).then((status)=>{
+            console.log(status);
+
+        })
+        // var link = 'http://explorug.com/archanastools/niblpayment/O1DDPay.aspx?itemlist='+ itemList;
+        // console.log(link)
+        // window.location = link;
     }
-    
+    const postToNIBL = (itemList)=>{
+        return new Promise((resolve, reject)=>{
+            let data = new FormData();
+            data.append("itemlist", itemList);
+            //axios.post("http://explorug.com/archanastools/niblpayment/O1DDPay.aspx", data)
+            axios.post('http://explorug.com/archanastools/niblpayment/O1DDPay.aspx?itemlist='+itemList)
+                 .then(response=>{
+                     resolve(data);
+                })
+                .catch(error=>{
+                    reject(error);
+                });
+        });
+    }
     return (
             <Col lg={{ span: 8, offset: 2 }} md={{ span: 8, offset: 2 }} sm={{ span: 8, offset: 1 }} xm={12}>
                 
@@ -139,6 +172,12 @@ const Checkout = () => {
                                     <div>
                                         <CheckoutButton onClick={checkOutAction}>
                                             <strong>Checkout<br/>PayPal</strong>
+                                            <br/>
+                                            ${cart.length}.00 Total buy
+                                        </CheckoutButton>
+                                        
+                                        <CheckoutButton onClick={NIBLcheckOutAction} marginTop="10px">
+                                            <strong>Checkout<br/>NIBL</strong>
                                             <br/>
                                             ${cart.length}.00 Total buy
                                         </CheckoutButton>
