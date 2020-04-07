@@ -13,10 +13,10 @@ import {WholeContext} from '../App';
 let errorMsgs = [ "Must match the previous entry", "Coupon code is not valid", "Not enough coupon balance to checkout", "**Please fill up the form"];
 
 const couponForm = {
-    code:'',
-    name:'',
-    email:'',
-    retypedEmail:'',
+    code:'ATPADMA',
+    name:'Alita shrestha',
+    email:'alita@explorug.net',
+    retypedEmail:'alita@explorug.net',
     couponTotalAmt:0,
     errorMsg: '',
     couponSuccess: false
@@ -88,9 +88,6 @@ const checkCoupon = (code, total)=>{
 };
 const CouponForm = styled(Col)`
     margin:auto;
-`
-const CouponInfo = styled.div`
-
 `
 const CouponSuccess = styled(CouponForm)`
     text-align: center;
@@ -203,29 +200,37 @@ const Coupon = () => {
         if(formVerified)
         {
             console.log(state.code, cart.length);
-            checkCoupon(state.code, cart.length).then((data)=>{
-                console.log(data);
-                let response = data;
-                dispatch({
-                    type:'set_couponSuccess',
-                    payload: response.state
-                });
-                if(response.state){ //payment successful
-                    emptyCart();
-                    storeFormInSession();
-                    dispatch({
-                        type:'set_couponTotalAmt',
-                        payload: response.value
-                    });
-                }
-                else{ ////payment unsuccessful
-                    const errVal = response.state? errorMsgs[2]:errorMsgs[1]
-                    dispatch({
-                        type:'set_errorMsg',
-                        payload: errVal
-                    });
-                }
-            })
+            sendEmail().then(sendEmailResponse=>{
+                console.log(sendEmailResponse);
+               
+            });
+            // checkCoupon(state.code, cart.length).then((data)=>{
+            //     console.log(data);
+            //     let response = data;
+                
+            //     if(response.state){ //payment successful
+            //         sendEmail().then(sendEmailResponse=>{
+            //             console.log(sendEmailResponse);
+            //             dispatch({
+            //                 type:'set_couponSuccess',
+            //                 payload: response.state
+            //             });
+            //             emptyCart();
+            //         });
+            //         storeFormInSession();
+            //         dispatch({
+            //             type:'set_couponTotalAmt',
+            //             payload: response.value
+            //         });
+            //     }
+            //     else{ ////payment unsuccessful
+            //         const errVal = response.state? errorMsgs[2]:errorMsgs[1]
+            //         dispatch({
+            //             type:'set_errorMsg',
+            //             payload: errVal
+            //         });
+            //     }
+            // });
         }
     }
     const emptyCart =()=>{
@@ -245,7 +250,54 @@ const Coupon = () => {
         }
         window.sessionStorage.setItem('couponFormdata', JSON.stringify(store));
     }
+    //https://only1dollardesigns.com/sendemail.php?buyer=alita-shrestha&buyeremail=alita@explorug.net&filename=shrestha230292&cache=AF802D76625EA3B4066EC8241EB98997&designs=Abstract/Nimrite%7CDesigners-Collection/Ageicent%7CAbstract/Heliolood%7CAbstract/Axiomio
+    const sendEmail = ()=>{
+        console.log(state.name)
+        return new Promise((resolve,reject)=>{
+            // let data = new FormData();
+            // data.append("action", "checkcoupon");
+            // data.append("id",code);
+            // data.append("total",total);
+            window.state = checkoutContext.state;
+            const buyer = state.name.replace(/ /g, '-');
+            console.log("sendEmail -> buyer", buyer)
+            const buyeremail = state.email;
+            console.log("sendEmail -> buyeremail", buyeremail)
+            const filename = "shrestha230292";
+            console.log(cart);
+            const designArrStr = getDesignsListStr(cart);
 
+            const cacheId = getCacheId(cart[0].fullDesign);
+            console.log(cacheId);
+            //https://only1dollardesigns.com/sendemail.php?buyer=alita-shrestha&buyeremail=alita@explorug.net&filename=shrestha230292&cache=AF802D76625EA3B4066EC8241EB98997&designs=Abstract/Nimrite%7CDesigners-Collection/Ageicent%7CAbstract/Heliolood%7CAbstract/Axiomio
+
+            axios.post('https://only1dollardesigns.com/sendemail.php?buyer='+buyer+'&buyeremail='+buyeremail+'&filename='+filename+'&cache='+cacheId+'&designs='+designArrStr)
+            .then(response =>{
+                resolve(response.data);
+            })
+            .catch(error=>{
+            reject(error);
+            })
+        })
+    }
+    const getDesignsListStr=(cart)=>{
+        let designArrStr = '';
+        cart.forEach(element => {
+            let design = element.design.replace('Designs/','').replace('.ctf','');
+            designArrStr += design+'|';
+        });
+        const lastBarPos = designArrStr.lastIndexOf('|');
+        designArrStr = designArrStr.substr(0, lastBarPos);
+        designArrStr = designArrStr.replace(/ /g, '-');
+        console.log(designArrStr);
+        return designArrStr;
+    }
+    const getCacheId=(designPath)=>{
+        const startPos = designPath.lastIndexOf('Cache/')+6;
+        const endPos = designPath.lastIndexOf('/Designs');
+        const cacheId = designPath.substr(startPos, endPos-startPos);
+        return cacheId;
+    }
     return (
         <Col lg={{ span: 8, offset: 2 }} md={{ span: 8, offset: 2 }} sm={{ span: 8, offset: 1 }} xm={12}>
             <CategoryTitle  

@@ -62,7 +62,7 @@ const Checkout = () => {
 
         console.log(itemList);
         var link = "https://www.paypal.com/cgi-bin/webscr?currency_code=USD&cmd=_cart&upload=1&business=onlyhundred@explorug.net&lc=US&notify_url=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fipn%2ephp"+
-        itemList+
+        itemList +
         //"&custom=543a385a-cbe8-4aae-bd17-a06e31cc8e93"+
         "&button_subtype=services&no_note=1&no_shipping=1&rm=1"+
         "&return=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fthank"+
@@ -71,6 +71,7 @@ const Checkout = () => {
         console.log(link)
         window.location = link;
     }
+    
     const NIBLcheckOutAction =()=>{
         var itemList = '';
         cart.forEach((element, index) => {
@@ -86,11 +87,13 @@ const Checkout = () => {
             "&item_name_3=Wiros Egolox&amount_3=1";
 
         console.log(itemList);
+        var link='http://explorug.com/archanastools/niblpayment/O1DDPay.aspx?itemlist='+itemList+"&return=http%3a%2f%2fwww%2eonly1dollardesigns%2ecom%2fthank"+
+        "&cancel_return=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fhelp&bn=PP%2dBuyNowBF%3abtn_buynow_LG%2egif%3aNonHosted";
+        window.location=link;
+        // postToNIBL(itemList).then((status)=>{
+        //     console.log(status);
 
-        postToNIBL(itemList).then((status)=>{
-            console.log(status);
-
-        })
+        // })
         // var link = 'http://explorug.com/archanastools/niblpayment/O1DDPay.aspx?itemlist='+ itemList;
         // console.log(link)
         // window.location = link;
