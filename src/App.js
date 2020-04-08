@@ -14,19 +14,16 @@ import ThankyouPage from './components/ThankyouPage';
 import { Copyright, FooterLinks } from './components/StyledComponents';
 
 
-import AppProvider from './functions/AppProvider';
 import UtilitiesFn from './functions/UtilitiesFn';
 import {Context, reducer, initialState } from "./store";
 import Coupon from './components/Coupon';
 
 import AppNewProvider from './api/appProvider';
 
-let app = new AppProvider();
 let utilityFn = new UtilitiesFn();
 
-let callCount =0;
 let designsPerPage = 10;
-let APIdomain= "https://explorug.com/v2/";
+let APIdomain= AppNewProvider.domain;
 
 export const CurrentPageContext = React.createContext();
 export const DesignContext =  React.createContext();
