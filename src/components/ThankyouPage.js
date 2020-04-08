@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Col, Row } from 'react-bootstrap';
 
 import {CategoryTitle, CouponMsg} from './StyledComponents';
+import {WholeContext} from '../App';
 
 const ThankyouPage = () => {
+    const checkoutContext = useContext(WholeContext);
+    
+    let state = checkoutContext.state;
+    let dispatch = checkoutContext.dispatch;
+
     return (
         <Col lg={{ span: 8, offset: 2 }} md={{ span: 8, offset: 2 }} sm={{ span: 8, offset: 1 }} xm={12}>
                 <CategoryTitle 
@@ -20,6 +26,11 @@ const ThankyouPage = () => {
                     <br/>
                     Do not forget to check spam/junk as well
 
+                    <div>
+                        <span>Else you can contact us at:</span>
+                            <br/>
+                            <a href="mailto:contact@only1dollardesign.com" target="_new">contact@only1dollardesigns.com</a>
+                    </div>
                 </CouponMsg>
         </Col>
     );

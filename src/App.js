@@ -19,6 +19,7 @@ import UtilitiesFn from './functions/UtilitiesFn';
 import {Context, reducer, initialState } from "./store";
 import Coupon from './components/Coupon';
 
+import AppNewProvider from './api/appProvider';
 
 let app = new AppProvider();
 let utilityFn = new UtilitiesFn();
@@ -34,19 +35,12 @@ export const WholeContext = Context;
 
 const login=()=>{
   return new Promise((resolve, reject)=>{
-      app.GetKey("o1dd", "oodd").then((data)=>{
-          if(data===''&& callCount<2){
-              callCount++;
-              login();
-          }
-          else if(data!==''){
-              resolve (data);
-          }
-          else{
-              reject('error while getting key');
-          }
-      })
-  
+    const username = 'o1dd';
+    const password = 'oodd';
+    
+    AppNewProvider.fetchApiKey({username, password})
+        .then(key=>resolve(key))
+        .catch(err=> reject(err))
   })
 }
 
@@ -54,11 +48,16 @@ const LoadCurrentPageDesigns = (currentPage, filteredList)=> {
   return new Promise((resolve, reject)=>{
       let currentPageDesigns = utilityFn.GetCurrentPageDesigns(currentPage, filteredList, designsPerPage);
       
-      app.GetDesignThumbs(initialState.key, currentPageDesigns).then((thumbList) => {
-             initialState.currentPage = currentPage;
-             initialState.designThumbs= thumbList;
-             resolve(initialState.designThumbs);
-      });
+      AppNewProvider.fetchDesignThumbNails({designsFullPathlist:currentPageDesigns}).then((thumbList) => {
+        initialState.currentPage = currentPage;
+        initialState.designThumbs= thumbList;
+        resolve(initialState.designThumbs);
+    }); 
+    //   app.GetDesignThumbs(initialState.key, currentPageDesigns).then((thumbList) => {
+    //          initialState.currentPage = currentPage;
+    //          initialState.designThumbs= thumbList;
+    //          resolve(initialState.designThumbs);
+    //   });
   });
 };
 const indexVariables=(direction)=>{
@@ -118,21 +117,26 @@ const App = ()=> {
    
   useEffect(()=>{
       login().then((key)=>{
-          app.GetDesignList(key).then((data)=>{  
-              let designs = utilityFn.GetDesigns(data);
-              let folders = utilityFn.GetFolders(data);
-              initialState.designList = designs;
-              initialState.designCategories = folders;
-              initialState.key = key;
-              console.log('initial key '+initialState.key)
-              dispatch({
-                  type: 'set_designCategories',
-                  payload: folders
-              });
-             
-              LoadPage(0, true);
-             
-           });
+      console.log("App -> key", key)
+            AppNewProvider.fetchDesignList().then((data)=>{
+                console.log(data)
+                let designs = utilityFn.GetDesigns(data);
+                console.log("App -> designs", designs)
+                let folders = utilityFn.GetFolders(data);
+                initialState.designList = designs;
+                initialState.designCategories = folders;
+                initialState.key = key;
+                console.log('initial key '+initialState.key)
+                dispatch({
+                    type: 'set_designCategories',
+                    payload: folders
+                });
+               
+                LoadPage(0, true);
+            });
+        //   app.GetDesignList(key).then((data)=>{  
+              
+        //    });
       });
   },[]);
   useEffect(()=>{
@@ -182,7 +186,10 @@ const selectDesign=(selectedDesign, selectedThumb)=>{
         payload: true
     });
     
-    app.GetDesignDetails(initialState.key, selectedDesign).then((designdetails)=>{
+    AppNewProvider.fetchDesignDetails({selectedDesign}).then((designdetails)=>{
+
+    // })
+    // app.GetDesignDetails(initialState.key, selectedDesign).then((designdetails)=>{
         console.log(designdetails)
         let inCart = utilityFn.alreadyInCart(selectedDesign, initialState.cart) ? true:false;
         

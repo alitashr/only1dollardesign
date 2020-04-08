@@ -10,6 +10,7 @@ import GeneralInfo from './GeneralInfo';
 import axios from 'axios';
 
 const Checkout = () => {
+    
     console.log('----in checkout---')
     const checkoutContext = useContext(WholeContext);
     
