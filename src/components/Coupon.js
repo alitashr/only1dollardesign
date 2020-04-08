@@ -12,10 +12,10 @@ import {WholeContext} from '../App';
 let errorMsgs = ['Must match the previous entry', 'Coupon code is not valid', 'Not enough coupon balance to checkout', '**Please fill up the form'];
 
 const couponForm = {
-  code: 'ATPADMA',
-  name: 'Alita shrestha',
-  email: 'alita@explorug.net',
-  retypedEmail: 'alita@explorug.net',
+  code: '',
+  name: '',
+  email: '',
+  retypedEmail: '',
   couponTotalAmt: 0,
   errorMsg: '',
   couponSuccess: false,
