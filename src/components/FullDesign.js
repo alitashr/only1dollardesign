@@ -48,6 +48,7 @@ const FullDesign = (props) => {
     
     const designContext = useContext(WholeContext);
     const selectedDesign = designContext.state.selectedDesign;
+    console.log(selectedDesign);
     const designDetails = designContext.state.designDetails;
     const designCanvas = designContext.state.designCanvas;
 
@@ -60,7 +61,7 @@ const FullDesign = (props) => {
     const dispatch = designContext.dispatch;
     let loading=  designContext.state.designLoading;
 
-    console.log(designDetails);
+    console.log('loading' , loading, designDetails);
 
     // let imgsrc= designDetails!==''? "https://explorug.com/v2/" + designDetails.RenderingProperties.RenderedImagePath: '';
     let imgsrc= designCanvas.toDataURL();

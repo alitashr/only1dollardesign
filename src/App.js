@@ -186,11 +186,12 @@ function search(nameKey, myArray){
 }
 
 const selectDesign=(selectedDesign, selectedThumb)=>{
-    dispatch({
-        type: 'set_designLoading',
-        payload: true
-    });
-    
+    // dispatch({
+    //     type: 'set_designLoading',
+    //     payload: true
+    // });
+    dispatch({type: 'set_BusySignal', payload: true})
+       
     var designElem = search(selectedDesign, initialState.designThumbs)
     var designdetails = designElem.Props;
 
@@ -223,6 +224,8 @@ const selectDesign=(selectedDesign, selectedThumb)=>{
             type: 'set_inCart',
             payload: inCart
         });
+        dispatch({type: 'set_BusySignal', payload: false})
+       
         
         //check if first
         let designthumbArray = initialState.designThumbs;

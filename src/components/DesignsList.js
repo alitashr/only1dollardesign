@@ -24,10 +24,10 @@ const DesignsList = () => {
         selectDesign(selectedDesign, selectedThumb);
         
     }
-    console.log(showContentLoadingSignal)
+    console.log('showContentLoadingSignal', showContentLoadingSignal)
     return (
         <DesignsArea>
-            {showContentLoadingSignal? <BusySignal show={true}></BusySignal>: null}
+        <BusySignal show={showContentLoadingSignal}></BusySignal>
             {
                     thumbs.length>0 ? 
                     thumbs.map((thumb, index)=>
