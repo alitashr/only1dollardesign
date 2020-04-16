@@ -4,6 +4,7 @@ import {Col} from 'react-bootstrap';
 import styled from 'styled-components';
 
 import './index.css';
+import axios from 'axios';
 const CouponForm = styled(Col)`
   margin: auto;
 `;
@@ -41,6 +42,21 @@ const Thankyou = props => {
     const couponTotalAmt = sessionStorage.getItem('couponTotalAmt') || 0;
     const downloadLink = sessionStorage.getItem('downloadLink') || ''; //call for download link
     const method = sessionStorage.getItem('method') || '';
+    const designArrStr = sessionStorage.getItem('designArrStr') || '';
+
+    // axios
+    //     .post(
+    //       'https://alternative.com.np/atcurrency/GetZipFilename.php?action=' +
+    //         '&designs=' +
+    //         designArrStr
+    //     )
+    //     .then((response) => {
+    //         console.log(response)
+          
+    //     })
+    //     .catch((error) => {
+          
+    //     });
     
     return (
         <MessageContainer>

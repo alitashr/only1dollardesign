@@ -170,9 +170,8 @@ const Checkout = () => {
                     }
                         <Col lg={5} md={5} sm={6} xs={12}>
                             <center>
-                            <div id="googlePayContainer" style={{marginBottom:'1em'}}>
-                                    {/* <div dangerouslySetInnerHTML={{ __html: window.payBtn.innerHTML }} />; */}
-                                    </div>  
+                            <div id="googlePayContainer" style={{marginBottom:'1em', display:'none'}}>
+                            </div>  
 
                                 {cart.length>0 ? 
                                     <div>
