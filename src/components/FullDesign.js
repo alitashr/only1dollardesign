@@ -27,7 +27,7 @@ import {DesignContext} from '../App';
 import {WholeContext} from '../App';
 
 import UtilitiesFn from '../functions/UtilitiesFn';
-let utilityFn = new UtilitiesFn();
+//let UtilitiesFn = UtilitiesFn;//new UtilitiesFn();
 
 
 const FullDesign = (props) => {
@@ -49,6 +49,8 @@ const FullDesign = (props) => {
     const designContext = useContext(WholeContext);
     const selectedDesign = designContext.state.selectedDesign;
     const designDetails = designContext.state.designDetails;
+    const designCanvas = designContext.state.designCanvas;
+
     const inCart = designContext.state.inCart;
     let cart = designContext.state.cart;
     const selectedThumb = designContext.state.selectedThumb;
@@ -60,7 +62,8 @@ const FullDesign = (props) => {
 
     console.log(designDetails);
 
-    let imgsrc= designDetails!==''? "https://explorug.com/v2/" + designDetails.RenderingProperties.RenderedImagePath: '';
+    // let imgsrc= designDetails!==''? "https://explorug.com/v2/" + designDetails.RenderingProperties.RenderedImagePath: '';
+    let imgsrc= designCanvas.toDataURL();
     
 
     const Intensity = (rgb)=> {
@@ -91,11 +94,11 @@ const FullDesign = (props) => {
             payload: ''
         });
     }
-    const handleAddToCart =(imgSrc, selectedDesign)=>{
+    const handleAddToCart =(selectedDesign)=>{
         return new Promise((resolve, reject)=>{
-            let alreadyInCart = utilityFn.alreadyInCart(selectedDesign, cart) ? true:false;
+            let alreadyInCart = UtilitiesFn.alreadyInCart(selectedDesign, cart) ? true:false;
             if(!alreadyInCart){
-                addDesignToCart(imgSrc, selectedDesign).then(()=>{
+                addDesignToCart(selectedDesign).then(()=>{
                     console.log('to buy design now');
                     resolve(true);
                 });
@@ -106,13 +109,13 @@ const FullDesign = (props) => {
         })
     }
    
-    const addDesignToCart = (fulldesignSrc, selectedDesign)=>{
+    const addDesignToCart = (selectedDesign)=>{
         return new Promise((resolve, reject) => {
             let designToAdd = selectedDesign;
             let designCart = cart;
            // let selectedThumb = selectedThumb;
     
-            designCart.push({design:designToAdd, thumb: selectedThumb, fullDesign: fulldesignSrc});
+            designCart.push({design:designToAdd, thumb: selectedThumb});
     
             cart = designCart;
             console.log('addDesignToCart')
@@ -122,9 +125,9 @@ const FullDesign = (props) => {
         });
     }
     
-    const handleCart = (imgSrc, selectedDesign) =>{
+    const handleCart = (selectedDesign) =>{
         console.log('selectedThumb '+ selectedThumb)
-            handleAddToCart(imgSrc, selectedDesign).then((added)=>{
+            handleAddToCart(selectedDesign).then((added)=>{
                 console.log('state of cart');
                 console.log(cart);
                 window.sessionStorage.setItem('cart', JSON.stringify(cart));
@@ -201,7 +204,7 @@ const FullDesign = (props) => {
                                     </DesignInfoName>
                                 </DesignInfo>
                                 <CartOptions>
-                                    <CartBtnWrap background = "#B398CE" onClick={()=> handleCart(imgsrc, selectedDesign)}>
+                                    <CartBtnWrap background = "#B398CE" onClick={()=> handleCart(selectedDesign)}>
                                     
                                     <Link to={{
                                         pathname: '/checkout'
@@ -224,7 +227,7 @@ const FullDesign = (props) => {
                                     </CartBtn> */}
                                         
                                     </CartBtnWrap>
-                                    <CartBtnWrap background = "#DB97DB" onClick={()=> handleCart(imgsrc, selectedDesign)}>
+                                    <CartBtnWrap background = "#DB97DB" onClick={()=> handleCart(selectedDesign)}>
                                         <CartBtn incart ={inCart.toString()}>
                                             <div style={{fontSize:'18px'}} > +</div>
                                             <div>CART</div>

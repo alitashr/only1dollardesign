@@ -11,6 +11,7 @@ export const initialState ={
     selectedThumb: '',
     inCart: false,
     designDetails: '',
+    designCanvas:'',
     firstDesign: false,
     cart:[],
     checkout:false
@@ -61,6 +62,11 @@ export const initialState ={
             return{
                 ...state,
                 designDetails: action.payload
+            }
+        case 'set_designCanvas':
+            return{
+                ...state,
+                designCanvas: action.payload
             }
         case 'set_inCart':
             return{

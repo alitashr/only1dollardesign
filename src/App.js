@@ -19,8 +19,7 @@ import {Context, reducer, initialState } from "./store";
 import Coupon from './components/Coupon';
 
 import AppNewProvider from './api/appProvider';
-
-let utilityFn = new UtilitiesFn();
+import Thankyou from './components/Thankyou';
 
 let designsPerPage = 10;
 let APIdomain= AppNewProvider.domain;
@@ -43,11 +42,12 @@ const login=()=>{
 
 const LoadCurrentPageDesigns = (currentPage, filteredList)=> {
   return new Promise((resolve, reject)=>{
-      let currentPageDesigns = utilityFn.GetCurrentPageDesigns(currentPage, filteredList, designsPerPage);
+      let currentPageDesigns = UtilitiesFn.GetCurrentPageDesigns(currentPage, filteredList, designsPerPage);
       
       AppNewProvider.fetchDesignThumbNails({designsFullPathlist:currentPageDesigns}).then((thumbList) => {
         initialState.currentPage = currentPage;
         initialState.designThumbs= thumbList;
+        console.log(initialState)
         resolve(initialState.designThumbs);
     }); 
     //   app.GetDesignThumbs(initialState.key, currentPageDesigns).then((thumbList) => {
@@ -60,7 +60,7 @@ const LoadCurrentPageDesigns = (currentPage, filteredList)=> {
 const indexVariables=(direction)=>{
   const currentDesign = initialState.selectedDesign;
   let designthumbArray = initialState.designThumbs;
-  let index = utilityFn.getDesignIndex(designthumbArray,currentDesign);
+  let index = UtilitiesFn.getDesignIndex(designthumbArray,currentDesign);
   let totalPages = initialState.totalPages;
   let currentPage = initialState.currentPage;
   let loadNewPage = false;
@@ -96,7 +96,7 @@ const LoadCurrentPage = (currentPage, loadNewBool) =>{
       let filteredList = initialState.filteredDesignList;
       
       if(loadNewBool){
-          filteredList = utilityFn.FilterDesignList(initialState.designList,initialState.selectedFilters);
+          filteredList = UtilitiesFn.FilterDesignList(initialState.designList,initialState.selectedFilters);
           initialState.totalPages = Math.floor(filteredList.length/designsPerPage);
           initialState.filteredDesignList= filteredList; 
       }
@@ -117,9 +117,9 @@ const App = ()=> {
       console.log("App -> key", key)
             AppNewProvider.fetchDesignList().then((data)=>{
                 console.log(data)
-                let designs = utilityFn.GetDesigns(data);
+                let designs = UtilitiesFn.GetDesigns(data);
                 console.log("App -> designs", designs)
-                let folders = utilityFn.GetFolders(data);
+                let folders = UtilitiesFn.GetFolders(data);
                 initialState.designList = designs;
                 initialState.designCategories = folders;
                 initialState.key = key;
@@ -166,7 +166,7 @@ const LoadPage = (currentPage, loadNewBool) =>{
 
 const handlePageChange = (direction)=>{
     console.log(direction);
-    let currentPage = utilityFn.GetNewPageNumber(direction, initialState.currentPage, initialState.totalPages);
+    let currentPage = UtilitiesFn.GetNewPageNumber(direction, initialState.currentPage, initialState.totalPages);
     LoadPage(currentPage);
 }
 const selectCategory = (filterList)=>{
@@ -177,19 +177,33 @@ const selectCategory = (filterList)=>{
     });
     LoadPage(0, true);
 }
+function search(nameKey, myArray){
+    for (var i=0; i < myArray.length; i++) {
+        if (myArray[i].Name === nameKey) {
+            return myArray[i];
+        }
+    }
+}
+
 const selectDesign=(selectedDesign, selectedThumb)=>{
     dispatch({
         type: 'set_designLoading',
         payload: true
     });
     
-    AppNewProvider.fetchDesignDetails({selectedDesign}).then((designdetails)=>{
+    var designElem = search(selectedDesign, initialState.designThumbs)
+    var designdetails = designElem.Props;
 
-    // })
-    // app.GetDesignDetails(initialState.key, selectedDesign).then((designdetails)=>{
-        console.log(designdetails)
-        let inCart = utilityFn.alreadyInCart(selectedDesign, initialState.cart) ? true:false;
-        
+    // AppNewProvider.fetchDesignDetails({selectedDesign}).then((designdetails)=>{
+       console.log(designdetails)
+       AppNewProvider.getRenderedDesign({ designDetails : designdetails, fullpath: selectedDesign }).then(canvas => {
+        //setDesignPath(canvas.toDataURL());
+        //send designcanvas
+        dispatch({
+            type: 'set_designCanvas',
+            payload: canvas
+        });
+        let inCart = UtilitiesFn.alreadyInCart(selectedDesign, initialState.cart) ? true:false;
         initialState.selectedDesign = selectedDesign;
         initialState.designDetails = designdetails;
         initialState.inCart = inCart;
@@ -212,14 +226,17 @@ const selectDesign=(selectedDesign, selectedThumb)=>{
         
         //check if first
         let designthumbArray = initialState.designThumbs;
-        let index = utilityFn.getDesignIndex(designthumbArray,selectedDesign);
+        let index = UtilitiesFn.getDesignIndex(designthumbArray,selectedDesign);
         const firstDesign = (index===0 && initialState.currentPage===0)
         dispatch({
             type: 'set_firstDesign',
             payload: firstDesign
         });
         
-    })
+
+      });
+        
+    // })
 }
 const handleDesignChange = (direction)=>{
     let designthumbArray = initialState.designThumbs;
@@ -238,6 +255,7 @@ const handleDesignChange = (direction)=>{
         selectDesign(initialState.selectedDesign, initialState.selectedThumb);          
     }
 }
+
   return (
     <div className="App" style={{padding:'0 1em'}}>
        <WholeContext.Provider value={{ state, dispatch }}>

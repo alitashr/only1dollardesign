@@ -1,4 +1,4 @@
-import React, {useReducer, useContext, useEffect} from 'react';
+import React, {useReducer, useContext, useEffect, useState} from 'react';
 import {Col, Form} from 'react-bootstrap';
 import styled from 'styled-components';
 import axios from 'axios';
@@ -8,8 +8,11 @@ import Input from './Input';
 import GeneralInfo from './GeneralInfo';
 
 import {WholeContext} from '../App';
+import Thankyou from './Thankyou';
 
-let errorMsgs = ['Must match the previous entry', 'Coupon code is not valid', 'Not enough coupon balance to checkout', '**Please fill up the form'];
+let errorMsgs = ['Must match the previous entry', 'Coupon code is not valid', 'Not enough coupon balance to checkout', '**Please fill up the form', 'Coupon has been expired'];
+
+let couponErrorMsgs = ['Coupon code is not valid', 'Not enough coupon balance to checkout','Coupon has been expired'];
 
 const couponForm = {
   code: '',
@@ -70,10 +73,12 @@ const formReducer = (state, action) => {
   }
 };
 const checkCoupon = (code, total) => {
+  console.log(' check -- ', code, total);
   return new Promise((resolve, reject) => {
     axios
       .post('http://alternative.com.np/atcurrency/atapp.php?action=checkcoupon&id=' + code + '&total=' + total)
       .then((response) => {
+        console.log(response)
         resolve(response.data);
       })
       .catch((error) => {
@@ -108,12 +113,15 @@ const Coupon = () => {
   let cartDispatch = checkoutContext.dispatch;
 
   const [couponFormState, dispatch] = useReducer(formReducer, couponForm);
+  const [designsCount, setDesignsCount]  = useState(cart.length);
+  const [downloadLink, setDownloadLink]  = useState('');
+  const [couponError, setCouponError] = useState('');
 
   useEffect(() => {
     if (couponFormState.code !== '') {
       checkCoupon(couponFormState.code, 0).then((response) => {
+        console.log('check coupon ', response)
         if (response.state) {
-          //coupon valid
           dispatch({
             type: 'set_couponTotalAmt',
             payload: response.value,
@@ -195,8 +203,8 @@ const Coupon = () => {
       const filename = getZipFilename(couponFormState.name);
       console.log(cart);
       const designArrStr = getDesignsListStr(cart);
-
-      const cacheId = getCacheId(cart[0].fullDesign);
+      sessionStorage.setItem('designArrStr', designArrStr);
+      const cacheId = getCacheId(cart[0].thumb);
       console.log(cacheId);
       //https://only1dollardesigns.com/sendemail.php?buyer=alita-shrestha&buyeremail=alita@explorug.net&filename=shrestha230292&cache=AF802D76625EA3B4066EC8241EB98997&designs=Abstract/Nimrite%7CDesigners-Collection/Ageicent%7CAbstract/Heliolood%7CAbstract/Axiomio
       //https://alternative.com.np/atcurrency/atPayPal-Coupon.php?action=checkcoupon&id=ATPADMA&total=0&buyer=alita-shrestha&buyeremail=alita@explorug.net&filename=shrestha230292&cache=AF802D76625EA3B4066EC8241EB98997&designs=Nimrite&card=coupon
@@ -241,6 +249,13 @@ const Coupon = () => {
             type: 'set_couponSuccess',
             payload: response.state,
           });
+          //couponTotalAmt
+          sessionStorage.setItem('couponTotalAmt', couponFormState.couponTotalAmt);
+          sessionStorage.setItem('designsCount', cart.length);
+          sessionStorage.setItem('downloadLink', response.name);
+          setDesignsCount(cart.length);
+          setDownloadLink(response.name)
+
           emptyCart();
           storeFormInSession();
           dispatch({
@@ -249,11 +264,15 @@ const Coupon = () => {
           });
         } else {
           //payment unsuccessful
-          const errVal = response.state ? errorMsgs[2] : errorMsgs[1];
-          dispatch({
-            type: 'set_errorMsg',
-            payload: errVal,
-          });
+          //response.value = 0; coupon not valid
+          // = 1; balanace not enough
+          // 2: coupon expired
+          const errVal = response.value ? couponErrorMsgs[1] : response.value === 0 ? couponErrorMsgs[0]:couponErrorMsgs[2];
+          // dispatch({
+          //   type: 'set_errorMsg',
+          //   payload: errVal,
+          // });
+          setCouponError(errVal)
         }
       });
     }
@@ -294,7 +313,7 @@ const Coupon = () => {
       console.log(cart);
       const designArrStr = getDesignsListStr(cart);
 
-      const cacheId = getCacheId(cart[0].fullDesign);
+      const cacheId = getCacheId(cart[0].thumb);
       console.log(cacheId);
       //https://only1dollardesigns.com/sendemail.php?buyer=alita-shrestha&buyeremail=alita@explorug.net&filename=shrestha230292&cache=AF802D76625EA3B4066EC8241EB98997&designs=Abstract/Nimrite%7CDesigners-Collection/Ageicent%7CAbstract/Heliolood%7CAbstract/Axiomio
       axios
@@ -320,7 +339,9 @@ const Coupon = () => {
     return designArrStr;
   };
   const getCacheId = (designPath) => {
-    const startPos = designPath.lastIndexOf('Cache/') + 6;
+    //to change
+    //designPath: "https://v3.explorug.com/dev/Static/AF802D76625EA3B4066EC8241EB98997/Designs/Abstract/Beeth Anten.thumb.jpg"
+    const startPos = designPath.lastIndexOf('Static/') + 7;
     const endPos = designPath.lastIndexOf('/Designs');
     const cacheId = designPath.substr(startPos, endPos - startPos);
     return cacheId;
@@ -328,29 +349,14 @@ const Coupon = () => {
   return (
     <Col lg={{span: 8, offset: 2}} md={{span: 8, offset: 2}} sm={{span: 8, offset: 1}} xm={12}>
       <CategoryTitle text={'Checkout using coupon'} marginBottom="2em" />
-
+      
       {couponFormState.couponSuccess ? (
-        <CouponSuccess>
-          <div>
-            <span>
-              PURCHASE COMPLETE
-              <br />
-              TOTAL PAYMENT:
-            </span>
-            ${cart.length}.00
-          </div>
-          <div className="thanku">THANK YOU!</div>
-          <CouponMsg style={{fontSize: 16}}>
-            You will shortly recieve an email with the download link.
-            <br />
-            Do not forget to check spam/junk as well
-          </CouponMsg>
-
-          <div>
-            <span>COUPON BALANCE AFTER CHECKOUT</span>
-            <br />${couponFormState.couponTotalAmt}.00
-          </div>
-        </CouponSuccess>
+        <Thankyou 
+        method = {"coupon"}
+        designsCount = {designsCount}
+        couponTotalAmt = {couponFormState.couponTotalAmt}
+        downloadLink = {downloadLink}
+        ></Thankyou>
       ) : (
         <CouponForm sm={{span: 6}}>
           <Form onSubmit={submitForm}>
@@ -371,7 +377,11 @@ const Coupon = () => {
               />
             </Form.Group>
 
-            <div className="couponErrorMsg">{couponFormState.errorMsg !== '' ? <CouponMsg>{couponFormState.errorMsg}</CouponMsg> : null}</div>
+            <div className="couponErrorMsg">{couponFormState.errorMsg !== '' ? <CouponMsg>{couponFormState.errorMsg}</CouponMsg> : null}</div> 
+            <div className="couponErrorMsg">
+              { couponError !== '' && 
+                <CouponMsg>{couponError}</CouponMsg> 
+              }</div>
             <div style={{textAlign: 'center'}}>
               <CheckoutButton inlineBlock type="submit">
                 <strong>

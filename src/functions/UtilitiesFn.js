@@ -1,27 +1,24 @@
-import { Component } from 'react';
-
-class UtilitiesFn extends Component {
-    
-    GetFullPathList = (flatDesignList)=> {
+  
+    const GetFullPathList = (flatDesignList)=> {
         var designList = [];
         for (var i = 0; i < flatDesignList.length; i++) {
             designList[i] = flatDesignList[i].FullPath; 
         }
         return designList;
     }
-    GetCurrentPageDesigns = (currentPage, designArray, designsPerPage)=>{
+    const GetCurrentPageDesigns = (currentPage, designArray, designsPerPage)=>{
         let designsFullPathlist =[];
         if(designArray ===undefined ) console.log('designArray is blank');
         if(designArray.length>0){
-            designsFullPathlist = this.GetFullPathList(designArray.slice(currentPage*designsPerPage,(currentPage+1)*designsPerPage));
+            designsFullPathlist = GetFullPathList(designArray.slice(currentPage*designsPerPage,(currentPage+1)*designsPerPage));
         }
         return designsFullPathlist;
     }
-    Shuffle = (array) => {
+    const Shuffle = (array) => {
         array.sort(() => Math.random() - 0.5);
         return array;
     }
-    GetDesigns = (data)=>{
+    const GetDesigns = (data)=>{
         let designList = data.filter(function(item) {
             return item.Type === 'file'
           });
@@ -32,13 +29,13 @@ class UtilitiesFn extends Component {
           }
         return designList;
     }
-    GetFolders = (data)=>{
+    const GetFolders = (data)=>{
         let folderList = data.filter(function(item, index) {
             return item.Type === 'folder' && data.indexOf(item) === index && item.Name!=="Designs"
           });
         return folderList;
     }
-    FilterDesignList=(designList, filters)=>{
+    const FilterDesignList=(designList, filters)=>{
         let filteredList = filters.length ? []: designList;
         if(filters.length>0){
             filters.map(filter=>{
@@ -48,15 +45,15 @@ class UtilitiesFn extends Component {
                 })
             });
         }
-        filteredList = this.Shuffle(filteredList);
+        filteredList = Shuffle(filteredList);
         return filteredList;
     }
-    GetNewPageNumber=(direction, thisPageNum, totalPages) =>{
+    const GetNewPageNumber=(direction, thisPageNum, totalPages) =>{
         let currentPage = direction === 'next' ? thisPageNum + 1 : thisPageNum - 1;
         currentPage = currentPage < 0 ? 0 : currentPage > totalPages ? totalPages : currentPage;
         return currentPage;
     }
-    alreadyInCart = (selectedDesign, cart)=>{
+    const alreadyInCart = (selectedDesign, cart)=>{
         let currentDesign = selectedDesign;
         let designCart = cart;
         let design1 = designCart.filter((design)=>{
@@ -65,7 +62,7 @@ class UtilitiesFn extends Component {
         if(design1.length>0) return true;
         else return false;
     }
-    getDesignIndex = (designthumbArray,currentDesign)=>{
+    const getDesignIndex = (designthumbArray,currentDesign)=>{
         var index;
         var obj = designthumbArray.find(function(item, i){
             if(item.Name === currentDesign){
@@ -75,7 +72,35 @@ class UtilitiesFn extends Component {
         });
         return index;
     }
-    
-}
+   
 
+
+const getDesignsListStr = (cart) => {
+    let designArrStr = '';
+    cart.forEach((element) => {
+      let design = element.design.replace('Designs/', '').replace('.ctf', '');
+      designArrStr += design + '|';
+    });
+    const lastBarPos = designArrStr.lastIndexOf('|');
+    designArrStr = designArrStr.substr(0, lastBarPos);
+    designArrStr = designArrStr.replace(/ /g, '-');
+    console.log(designArrStr);
+    return designArrStr;
+};
+  
+const UtilitiesFn = {
+    GetFullPathList,
+    GetCurrentPageDesigns,
+    Shuffle,
+    GetDesigns,
+    GetFolders,
+    FilterDesignList,
+    GetNewPageNumber,
+    alreadyInCart,
+    getDesignIndex,
+    GetFullPathList,
+
+    getDesignsListStr
+  };
+  
 export default UtilitiesFn;

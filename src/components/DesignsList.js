@@ -5,8 +5,10 @@ import BusySignal from './BusySignal';
 import {DesignContext} from '../App';
 import {WholeContext} from '../App';
 
+import AppNewProvider from '../api/appProvider';
+let APIdomain = AppNewProvider.domain;
+
 const DesignsList = () => {
-    
     const designContext = useContext(DesignContext);
     let selectDesign = designContext.selectDesign;
    
@@ -33,7 +35,7 @@ const DesignsList = () => {
                     <div>
                         <img data-name={thumb.Name} 
                             onClick={handleClick}
-                            src={"https://explorug.com/v2/"+thumb.Value}/></div>
+                            src={`${APIdomain}${thumb.Thumb}`}/></div>
                     </DesignThumb>)
                     :null
                 }
