@@ -3,7 +3,7 @@ import { createCanvas } from "../utils/canvasutils";
 import { readJSON, convertTilePointToName } from "../utils/utils";
 
 //export const domain = 'https://explorug.com/v2';
-export const domain = "https://v3.explorug.com/dev";
+export const domain = "https://v3rc.explorug.com";
 
 
 
