@@ -20,6 +20,7 @@ import Coupon from './components/Coupon';
 
 import AppNewProvider from './api/appProvider';
 import Thankyou from './components/Thankyou';
+import CheckoutVisaCard from './components/CheckoutVisaCard';
 
 let designsPerPage = 10;
 let APIdomain= AppNewProvider.domain;
@@ -279,6 +280,7 @@ const handleDesignChange = (direction)=>{
                 <Route exact path='/checkout'  component = {Checkout}/>
                 <Route exact path = '/thank' component={ThankyouPage}/>
                 <Route exact path='/coupon' component={Coupon}/>  
+                <Route exact path="/visacard" component={CheckoutVisaCard}/>
                 
                 {/* render={ (props) => <Checkout data= {state.cart} {...props} removeItemFromCart ={removeItemFromCart} />}/> */}
                 {/* </Switch> */}

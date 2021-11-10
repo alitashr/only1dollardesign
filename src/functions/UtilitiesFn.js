@@ -88,6 +88,7 @@ const getDesignsListStr = (cart) => {
     return designArrStr;
 };
   
+
 const UtilitiesFn = {
     GetFullPathList,
     GetCurrentPageDesigns,

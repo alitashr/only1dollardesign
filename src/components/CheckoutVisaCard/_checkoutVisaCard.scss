@@ -1,0 +1,25 @@
+.back-button {
+  padding: 20px 0;
+  border: none;
+  border-radius: 0;
+  width: 11em;
+  max-width: 310px;
+
+  background-color: "#B398CE";
+  color: #323232;
+  font-size: 16px;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: "block";
+  margin-top: 0;
+  text-decoration: none;
+  &:hover {
+    background-color: "#3D1930";
+    color: "#fff";
+    cursor: "pointer";
+    text-decoration: none;
+  }
+  &.disabled {
+    background: black;
+  }
+}
