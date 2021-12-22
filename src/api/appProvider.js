@@ -9,8 +9,12 @@ export const domain = "https://v3.explorug.com";
 let provider = "appproviderv3.aspx";
 const API_KEY = "apikey";
 
+let paymentProvider = "https://explorug.com/archanastools/niblpayment/O1DDPayNPR.aspx"; //"http://192.168.1.135/nibl/O1DDPayNPR.aspx";// 
 const postHttpClient = (data, config) =>
   HttpClient.post(`${domain}/${provider}`, data, config).then((response) => response.data);
+
+const postPaymentClient = (data) =>
+  HttpClient.post(`${paymentProvider}`, data).then((response) => response.data);
 
 const postWithRetry = (data) => {
   return new Promise((resolve, reject) => {
@@ -28,7 +32,7 @@ const postWithRetry = (data) => {
   });
 };
 
-const getApiKey = () => sessionStorage.getItem(API_KEY);
+export const getApiKey = () => sessionStorage.getItem(API_KEY);
 
 const fetchApiKey = ({ username, password }) => {
   let data = new FormData();
@@ -112,7 +116,7 @@ const fetchDesignDetails = ({ selectedDesign, backColor = "#ffffff" }) => {
   });
 };
 
-const fetchVisualizationTiles = ({ file, zoom, tiles, props, felt=0 }) => {
+const fetchVisualizationTiles = ({ file, zoom, tiles, props, felt = 0 }) => {
   felt = felt ? 1 : 0;
   let data = new FormData();
   data.append("action", "visualizationtiles");
@@ -123,14 +127,22 @@ const fetchVisualizationTiles = ({ file, zoom, tiles, props, felt=0 }) => {
   data.append("tiles", JSON.stringify(tiles));
   if (props) data.append("props", JSON.stringify(props));
   return postHttpClient(data).then((path) => {
-    console.log("returnpostHttpClient -> path", path)
+    console.log("returnpostHttpClient -> path", path);
     // const s = path.split("\\")
     // s.splice(3).join("/")
     return `${AppNewProvider.domain}${path}`;
   });
 };
 
-const getRenderedDesign = async ({ designDetails, fullpath, hash, zoom = 1, felt=0, watermarkOptions={}, applyKLRatio= true }) => {
+const getRenderedDesign = async ({
+  designDetails,
+  fullpath,
+  hash,
+  zoom = 1,
+  felt = 0,
+  watermarkOptions = {},
+  applyKLRatio = true,
+}) => {
   const tileSize = 256;
   return new Promise((resolve, reject) => {
     let { Width, Height, KLRatio } = designDetails;
@@ -138,9 +150,10 @@ const getRenderedDesign = async ({ designDetails, fullpath, hash, zoom = 1, felt
     const canvasWidth = Width * zoom;
     // const canvasHeight = canvasWidth / ratio ;
     const canvasHeight = Height * zoom;
-    
+
     if (!applyKLRatio) KLRatio = 1;
-    const canvas = createCanvas(canvasWidth, canvasHeight* KLRatio);
+    const canvas = createCanvas(canvasWidth, canvasHeight * KLRatio);
+    console.log("returnnewPromise -> canvasWidth, canvasHeight* KLRatio", canvasWidth, canvasHeight * KLRatio);
 
     let xTotal = Math.floor((canvasWidth - 1) / 256) + 1;
     let yTotal = Math.floor((canvasHeight - 1) / 256) + 1;
@@ -192,6 +205,40 @@ const getRenderedDesign = async ({ designDetails, fullpath, hash, zoom = 1, felt
   });
 };
 
+const payNPR = async({itemlist, returnUrl, cancelUrl, name, email, cacheId, zipFilename})=>{
+  let data = new FormData();
+  data.append("itemlist", itemlist);
+  data.append("return", returnUrl);
+  data.append("cancel_return", cancelUrl);
+  data.append("name", name);
+  data.append("email", email);
+  data.append("cacheId", cacheId);
+  data.append("filename", zipFilename);
+  
+  //if (props) data.append("props", JSON.stringify(props));
+  return postPaymentClient(data).then((path) => {
+    console.log("returnpostHttpClient -> path", path);
+    // const s = path.split("\\")
+    // s.splice(3).join("/")
+    return data;
+  });
+}
+const postListForEmail = async ({designpathlist, itemlist, name, email, cacheId, zipFilename})=>{
+  let data = new FormData();
+  data.append("designpathlist", designpathlist);
+  data.append('key', getApiKey());
+  data.append("itemlist", itemlist);
+  data.append("name", name);
+  data.append("email", email);
+  data.append("cacheId", cacheId);
+  data.append("filename", zipFilename);
+  return postPaymentClient(data).then((path) => {
+    console.log("postListForEmail -> path", path);
+    return data;
+  });
+}
+
+
 const AppNewProvider = {
   domain,
   fetchApiKey,
@@ -200,5 +247,7 @@ const AppNewProvider = {
   fetchDesignDetails,
   fetchVisualizationTiles,
   getRenderedDesign,
+  payNPR,
+  postListForEmail
 };
 export default AppNewProvider;

@@ -1,25 +1,56 @@
-.back-button {
-  padding: 20px 0;
-  border: none;
-  border-radius: 0;
-  width: 11em;
-  max-width: 310px;
-
-  background-color: "#B398CE";
-  color: #323232;
+.galaincha-buttons {
   font-size: 16px;
-  text-transform: uppercase;
-  cursor: pointer;
-  display: "block";
-  margin-top: 0;
-  text-decoration: none;
-  &:hover {
-    background-color: "#3D1930";
-    color: "#fff";
-    cursor: "pointer";
-    text-decoration: none;
-  }
-  &.disabled {
-    background: black;
-  }
+  font-family: Trebuchet MS;
+  width: 200px;
+  height: 40px;
+  border-width: 1px;
+  color: #fff;
+  border-color: #566963;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  box-shadow: inset 0px 1px 3px 0px #91b8b3;
+  text-shadow: inset 0px -1px 0px #2b665e;
+  background: linear-gradient(rgba(80, 122, 154, 1), rgba(46, 80, 108, 1));
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+.galaincha-buttons:hover {
+  background: linear-gradient(#2e506c, #507a9a);
+  color: #fff;
+  text-decoration: none;
+}
+.checkoutButtons {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+// .back-button {
+//   padding: 20px 0;
+//   border: none;
+//   border-radius: 0;
+//   width: 11em;
+//   max-width: 310px;
+
+//   background-color: "#B398CE";
+//   color: #323232;
+//   font-size: 16px;
+//   text-transform: uppercase;
+//   cursor: pointer;
+//   display: "block";
+//   margin-top: 0;
+//   text-decoration: none;
+//   &:hover {
+//     background-color: "#3D1930";
+//     color: "#fff";
+//     cursor: "pointer";
+//     text-decoration: none;
+//   }
+//   &.disabled {
+//     background: black;
+//   }
+// }

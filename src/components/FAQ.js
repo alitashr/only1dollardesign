@@ -9,7 +9,7 @@ const FAQ = () => {
         <Col lg={{ span: 8, offset: 2 }} md={{ span: 8, offset: 2 }} sm={{ span: 8, offset: 1 }} xm={12}>
                 <CategoryTitle 
                 text="FREQUENTLY ASKED QUESTIONS (FAQ)"
-                marginBottom='2em'
+                marginbottom='2em'
                 />
                 
                 <FAQBlock>

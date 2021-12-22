@@ -24,7 +24,6 @@ const DesignsList = () => {
         selectDesign(selectedDesign, selectedThumb);
         
     }
-    console.log('showContentLoadingSignal', showContentLoadingSignal)
     return (
         <DesignsArea>
         <BusySignal show={showContentLoadingSignal}></BusySignal>

@@ -5,7 +5,7 @@ import DesignsFilter from './DesignsFilter';
 import DesignCategory from './DesignCategory';
 import DesignsList from './DesignsList';
 import Pagenav from './Pagenav';
-import FullDesign from './FullDesign';
+import FullDesign from '../components/FullDesign/index';
 
 import {WholeContext} from '../App';
 
@@ -14,8 +14,6 @@ const DesignsPage = (props) => {
 
     const checkoutContext = useContext(WholeContext);
     let selectedDesign = checkoutContext.state.selectedDesign;
-
-    console.log('selectedDesign '+selectedDesign);
 
     return (
             <div>

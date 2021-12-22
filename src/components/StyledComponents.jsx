@@ -189,16 +189,16 @@ const ClosePopup =  styled.div`
     color: #fff;
     cursor: pointer;
     position: absolute;
-    right: -32px;
-    padding: 5px;
+    right: -2rem;
+    padding: 0.5rem;
 `
 const NavBtn = styled.div`
     color: #fff;
     cursor: pointer;
     position: absolute;
-    right:  ${props => props.prev ? 'inherit': '-32px' };
-    left:  ${props => props.prev ? '-24px': 'inherit' };
-    padding: 5px;
+    right:  ${props => props.prev ? 'inherit': '-4rem' };
+    left:  ${props => props.prev ? '-4rem': 'inherit' };
+    padding: 0.5rem;
     top: 50%;
     opacity: ${props => props.disabled === 'disabled'? 0.5:1};
     color: ${props => props.disabled === 'disabled'? 'tranparent':'#fff'};
@@ -333,7 +333,7 @@ const ShareIcon = styled.a`
     }
 `
 const Copyright = styled.div`
-    margin: 50px 0 100px 0;
+    margin: 1rem;
     color: #959595;
     font-size: 14px;
     font-weight: 600;
@@ -506,7 +506,7 @@ const CategoryTitle = styled(Title)`
   font-size: 20px;
   background: url(${diamond}) repeat-x center;
   margin-top: 100px;
-  margin-bottom: ${props=>props.marginBottom ? props.marginBottom: '0'}
+  margin-bottom: ${props=>props.marginbottom ? props.marginbottom: '0'}
     * {
     padding: 0 30px;
     margin-top: -10px;

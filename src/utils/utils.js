@@ -280,3 +280,43 @@ export const getDesignPathInTitle = designPath => {
     .join("/");
   return title;
 };
+
+export const getDesignName = (designPath) => {
+  var dotpos = designPath.lastIndexOf(".");
+  var slashpos = designPath.lastIndexOf("/") + 1;
+  var roomName = designPath.substr(slashpos, dotpos - slashpos);
+  return roomName;
+};
+
+export const validateEmail = email => {
+  var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+  return re.test(email);
+};
+export const getCacheId = (designPath) => {
+  //to change
+  //designPath: "https://v3.explorug.com/dev/Static/AF802D76625EA3B4066EC8241EB98997/Designs/Abstract/Beeth Anten.thumb.jpg"
+  const startPos = designPath.lastIndexOf('Assets/') + 7;
+  const endPos = designPath.lastIndexOf('/Designs');
+  const cacheId = designPath.substr(startPos, endPos - startPos);
+  return cacheId;
+};
+
+export const getDesignsListStr = (cart) => {
+  let designArrStr = '';
+  cart.forEach((element) => {
+    let design = element.design.replace('Designs/', '').replace('.ctf', '');
+    designArrStr += design + '|';
+  });
+  const lastBarPos = designArrStr.lastIndexOf('|');
+  designArrStr = designArrStr.substr(0, lastBarPos);
+  designArrStr = designArrStr.replace(/ /g, '-');
+  console.log(designArrStr);
+  return designArrStr;
+};
+
+export const getZipFilename = (buyerName) => {
+  let randomNum = Math.round(Math.random() * 10000000000);
+  let buyerStr = buyerName.replace(/ /g, '');
+  let filename = buyerStr + randomNum; //"shrestha230292";
+  return filename;
+};

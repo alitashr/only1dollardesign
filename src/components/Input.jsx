@@ -18,7 +18,7 @@ const Input = (props) => {
       type={props.type}
       value={props.value}
       onChange={props.handleChange}
-      onConfirm = {props.hanldeConfirm ? props.hanldeConfirm: ()=>{}}
+      onSubmit = {props.onSubmit}
       placeholder={props.placeholder} 
       autoComplete = {props.onpaste ?  'off': 'on'}
       onPaste= {props.onpaste ? props.onpaste: null}

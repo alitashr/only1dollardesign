@@ -9,7 +9,7 @@ const ThankyouPage = () => {
     return (
         <Col lg={{ span: 8, offset: 2 }} md={{ span: 8, offset: 2 }} sm={{ span: 8, offset: 1 }} xm={12}>
                 <CategoryTitle 
-                marginBottom='2em'
+                marginbottom='2em'
                 text={"Thank you"}/>
              
                 <Thankyou>
