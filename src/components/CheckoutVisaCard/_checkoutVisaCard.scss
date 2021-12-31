@@ -28,7 +28,25 @@
   display: flex;
   justify-content: space-evenly;
 }
-
+.checkout-form-container {
+  width: 30rem;
+  max-width: 90%;
+  min-width: 12rem;
+}
+.paymentButton-image{
+  border: none;
+  &:hover, &:active, &:focus{
+    border: none;
+    outline: none;
+  }
+}
+@media screen and (max-width: 800px) {
+  .checkoutButtons {
+    flex-direction: column;
+    height: 7rem;
+    align-items: center;
+  }
+}
 // .back-button {
 //   padding: 20px 0;
 //   border: none;

@@ -9,7 +9,7 @@ export const domain = "https://v3.explorug.com";
 let provider = "appproviderv3.aspx";
 const API_KEY = "apikey";
 
-let paymentProvider = "https://explorug.com/archanastools/niblpayment/O1DDPayNPR.aspx"; //"http://192.168.1.135/nibl/O1DDPayNPR.aspx";// 
+export const paymentProvider = "http://192.168.1.136/nibl/O1DDPayNPR.aspx";// "https://explorug.com/archanastools/niblpayment/O1DDPayNPR.aspx"; //"http://192.168.1.135/nibl/O1DDPayNPR.aspx";// 
 const postHttpClient = (data, config) =>
   HttpClient.post(`${domain}/${provider}`, data, config).then((response) => response.data);
 

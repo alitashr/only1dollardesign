@@ -2,7 +2,7 @@ import React from 'react';
 
 const GeneralInfo = () => {
     return (
-        <div style={{marginTop:"10px", textAlign:"center"}}>
+        <div style={{marginTop:"1rem", textAlign:"center"}}>
             Having trouble checking out?
             <br/>
             Please contact us at <br/>

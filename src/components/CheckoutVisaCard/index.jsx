@@ -2,7 +2,7 @@ import React, { PropTypes, useContext, useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import AppNewProvider, { getApiKey } from "../../api/appProvider";
+import AppNewProvider, { getApiKey, paymentProvider } from "../../api/appProvider";
 import { WholeContext } from "../../App";
 import { getCacheId, getDesignName, getZipFilename, validateEmail } from "../../utils/utils";
 import GeneralInfo from "../GeneralInfo";
@@ -28,6 +28,9 @@ const CheckoutVisaCard = (props) => {
     const NIBLLink = NIBLcheckOutAction();
     console.log("useEffect -> NIBLLink", NIBLLink);
     setNIBLIframeSrc(NIBLLink);
+    //setdownloadLink
+    
+
   }, [cart, userInfo]);
 
   function getJsonFromUrl(url) {
@@ -53,6 +56,7 @@ const CheckoutVisaCard = (props) => {
     const cacheId = params.cacheId;
     const filename = params.filename;
 
+    
     console.log(cacheId, filename, designList);
 
     AppNewProvider.postListForEmail({
@@ -114,18 +118,9 @@ const CheckoutVisaCard = (props) => {
     const filename = getZipFilename(userInfo.name);
     console.log(cacheId, filename, designList);
 
-    // AppNewProvider.postListForEmail({
-    //   designpathlist: JSON.stringify(designPathArr),
-    //   itemlist: JSON.stringify(designList),
-    //   name: userInfo.name,
-    //   email: userInfo.email,
-    //   cacheId: cacheId,
-    //   zipFilename: filename,
-    // }).then((res) => {
-    //   console.log("postListForEmail -> res", res);
-    // });
+    sessionStorage.setItem('downloadLink', `https://v3.explorug.com/Only1DollarDesign/${filename}.zip`);
     var link =
-      "https://explorug.com/archanastools/niblpayment/O1DDPayNPR.aspx?itemlist=" +
+    paymentProvider+ "?itemlist=" +
       JSON.stringify(designList) +
       "&name=" +
       userInfo.name +
@@ -143,7 +138,7 @@ const CheckoutVisaCard = (props) => {
     <Col lg={{ span: 8, offset: 2 }} md={{ span: 8, offset: 2 }} sm={{ span: 8, offset: 1 }} xm={12}>
       <CategoryTitle text={"Checkout using Visa card"} marginbottom="2em" />
 
-      <Col sm={{ span: 6 }} style={{ margin: "auto" }}>
+      <div style={{ margin: "auto" }} className="checkout-form-container">
         <Form
           onSubmit={() => {
             console.log("form submit");
@@ -173,12 +168,13 @@ const CheckoutVisaCard = (props) => {
           <div className="errorMsg">{errorMsg !== "" ? <CouponMsg>{errorMsg}</CouponMsg> : null}</div>
           <div className="checkoutButtons">
             <div className="paymentButton">
-              <img
+              <button className="paymentButton-image" type="submit"> <img
                 style={{ display: !formValidation ? "block" : "none" }}
                 src="https://explorug.com/archanastools/niblpayment/TrialPageAssets/Pay-with-card.jpg"
                 onClick={showErrorMsg}
                 alt="visa card button"
               />
+              </button>
 
               <iframe
                 src={NIBLIframeSrc}
@@ -223,7 +219,7 @@ const CheckoutVisaCard = (props) => {
 
           <GeneralInfo />
         </Form>
-      </Col>
+      </div>
     </Col>
   );
 };

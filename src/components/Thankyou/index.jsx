@@ -43,21 +43,6 @@ const Thankyou = props => {
     const downloadLink = sessionStorage.getItem('downloadLink') || ''; //call for download link
     const method = sessionStorage.getItem('method') || '';
     const designArrStr = sessionStorage.getItem('designArrStr') || '';
-
-    // axios
-    //     .post(
-    //       'https://alternative.com.np/atcurrency/GetZipFilename.php?action=' +
-    //         '&designs=' +
-    //         designArrStr
-    //     )
-    //     .then((response) => {
-    //         console.log(response)
-          
-    //     })
-    //     .catch((error) => {
-          
-    //     });
-    
     return (
         <MessageContainer>
             <div>
@@ -65,25 +50,26 @@ const Thankyou = props => {
               PURCHASE COMPLETE
               <br />
               TOTAL PAYMENT:
-            </span>
+            </span> &nbsp;
             ${designsCount}.00
           </div>
-          <div className="thanku">THANK YOU!</div>
+          {/* <div className="thanku">THANK YOU!</div> */}
           <ThankMsg style={{fontSize: 16}}>
             {
               downloadLink!=='' &&
                 <>
-                    This link to download the designs will be active shortly.
-                <div>
-                    <a href={downloadLink} target="_blank">{downloadLink}</a>
-                </div>
+                    You can download the designs from
+                
+                    <a href={downloadLink} target="_blank"> this link. </a>
+                        
+                
                 <br/>
                 </>
             }
                    
-            You will also shortly recieve an email with the download link.
+            You will also receive an email with the download link.
             <br />
-            Do not forget to check spam/junk as well
+            Do not forget to check spam/junk as well.
           </ThankMsg>
             {
                 method === 'coupon' &&
@@ -92,8 +78,10 @@ const Thankyou = props => {
                     <br />${couponTotalAmt}.00
                 </div>
             }
+            <br/>
+            <br/>
             <div>
-                <span>Else you can contact us at:</span>
+                <span>If you still have problems downloading the purchased designs, you can contact us at:</span>
                     <br/>
                     <a href="mailto:contact@only1dollardesign.com" target="_new">contact@only1dollardesigns.com</a>
             </div>

@@ -19,8 +19,8 @@ import { Context, reducer, initialState } from "./store";
 import Coupon from "./components/Coupon";
 
 import AppNewProvider from "./api/appProvider";
-import Thankyou from "./components/Thankyou";
 import CheckoutVisaCard from "./components/CheckoutVisaCard";
+import PaymentFailPage from "./components/PaymentFailPage";
 
 let designsPerPage = 10;
 let APIdomain = AppNewProvider.domain;
@@ -272,6 +272,7 @@ const App = () => {
               <Route exact path="/faq" component={FAQ} />
               <Route exact path="/checkout" component={Checkout} />
               <Route exact path="/thank" component={ThankyouPage} />
+              <Route exact path="/payment_fail" component={PaymentFailPage} />
               <Route exact path="/coupon" component={Coupon} />
               <Route exact path="/visacard" component={CheckoutVisaCard} />
 

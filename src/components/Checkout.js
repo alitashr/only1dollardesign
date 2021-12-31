@@ -32,10 +32,10 @@ const Checkout = () => {
 
   useEffect(() => {
     console.log("----in checkout--- useeffect");
-    //addGooglePayBtn();
-    window.addGooglePayButton();
-    //document.getElementById('googlePayContainer').appendChild(window.payBtn);
-  }, []);
+
+    sessionStorage.setItem('designsCount', cart.length);
+  
+  }, [cart]);
   // useEffect(()=>{
   //   const NIBLLink = NIBLcheckOutAction();
   //   console.log("useEffect -> NIBLLink", NIBLLink)
@@ -85,60 +85,7 @@ const Checkout = () => {
     window.location = link;
   };
 
-  // const NIBLcheckOutAction = () => {
-  //   var itemList = "";
-  //   console.log("cart.forEach -> cart", cart)
-
-  //   cart.forEach((element, index) => {
-  //     let i = index + 1;
-  //     itemList += "item_name_" + i + "=" + getDesignName(element.design) + "|amount_" + i + "=1|";
-  //   });
-    
-  //   //for now
-  //   itemList =
-  //     itemList !== ""
-  //       ? itemList
-  //       : "&item_name_1=Lunazoph&amount_1=1" +
-  //         "&item_name_2=Mechanic&amount_2=1" +
-  //         "&item_name_3=Wiros Egolox&amount_3=1";
-
-  //   console.log(itemList);
-
-  //   var link =
-  //     "https://explorug.com/archanastools/niblpayment/O1DDPayNPR.aspx?itemlist=" +
-  //     itemList +
-  //     "&return=http%3a%2f%2fwww%2eonly1dollardesigns%2ecom%2fthank" +
-  //     "&cancel_return=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fhelp&bn=PP%2dBuyNowBF%3abtn_buynow_LG%2egif%3aNonHosted";
-  //     return link;
-  //   //window.location = link;
-  //   // postToNIBL(itemList).then((status)=>{
-  //   //     console.log(status);
-
-  //   // })
-  //   // var link = 'http://explorug.com/archanastools/niblpayment/O1DDPay.aspx?itemlist='+ itemList;
-  //   // console.log(link)
-  //   // window.location = link;
-  // };
-  // const postToNIBL = (itemList) => {
-  //   return new Promise((resolve, reject) => {
-  //     let data = new FormData();
-  //     data.append("itemlist", itemList);
-  //     //axios.post("http://explorug.com/archanastools/niblpayment/O1DDPay.aspx", data)
-  //     axios
-  //       .post(
-  //         "https://explorug.com/archanastools/niblpayment/O1DDPayNPR.aspx?itemlist=" +
-  //           itemList +
-  //           "&return=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fthank" +
-  //           "&cancel_return=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fhelp&bn=PP%2dBuyNowBF%3abtn_buynow_LG%2egif%3aNonHosted"
-  //       )
-  //       .then((response) => {
-  //         resolve(data);
-  //       })
-  //       .catch((error) => {
-  //         reject(error);
-  //       });
-  //   });
-  // };
+  
   return (
     <Col lg={{ span: 8, offset: 2 }} md={{ span: 8, offset: 2 }} sm={{ span: 8, offset: 1 }} xm={12}>
       <CategoryTitle text={"Your Cart"} />
