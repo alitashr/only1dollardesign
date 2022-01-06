@@ -14,13 +14,18 @@
     height: 100%;
   }
 }
-.fulldesign-container{
+.fulldesign-container {
   height: 100%;
 }
 .FullDesign {
+  max-width: 100%;
+  object-fit: contain;
+  max-height: 100%;
+}
+.full-design-container {
+  max-height: 100%;
   width: 100%;
   height: 100%;
-  object-fit: contain;
 }
 .ColorPatchCol {
   padding: 0.75rem;
@@ -32,15 +37,15 @@
   }
 }
 .Colorpatch {
-  height: 1.8em;
   background: #ccc;
-  margin-bottom: 5px;
+  margin-bottom: 0.5rem;
   font-size: 0.8em;
-  line-height: 1.8em;
-  padding: 0 0.4em;
+  line-height: 1.2em;
+  padding: 0.2rem 0.4rem;
   width: 100%;
   text-align: center;
-  min-width: 10em;
+  min-width: 5rem;
+  max-width: 12rem;
 }
 .DesignDisplay {
   display: flex;
@@ -49,33 +54,98 @@
   top: 50%;
   transform: translateY(-50%);
   max-height: 100%;
+  width: 100%;
+  overflow: auto;
   & > div {
     float: none;
-    display: table-cell;
     vertical-align: top;
   }
 
   .nopadding {
     padding: 0;
-    flex: 1 1 50%;
+    flex: 0 0 60%;
   }
 }
 .DesignNameArea {
   vertical-align: middle !important;
   padding: 0;
   display: flex;
+  flex: 0 0 25%;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: 6rem;
   .DesignInfo {
     align-self: center;
     color: #323232;
     text-transform: uppercase;
-    @media (min-width: 1200px) {
-      & {
-        min-width: 20vw;
-      }
-    }
     .DesignInfoName {
       font-size: 2rem;
       font-weight: 600;
+    }
+  }
+  @media only screen and (max-width: 1200px) {
+    & .DesignInfo .DesignInfoName {
+      font-size: 1.7rem;
+    }
+  }
+  @media only screen and (max-width: 800px) {
+    & {
+      flex: none;
+      display: block;
+    }
+  }
+}
+
+@media only screen and (min-width: 1500px) {
+  .popupContainer {
+    flex: 0 0 66.66%;
+    max-width: 66.66%;
+    margin-left: 16.667%;
+  }
+}
+@media only screen and (max-width: 1200px) {
+  .PopupWrapper {
+    padding: 3rem;
+  }
+  .DesignDisplay .nopadding {
+    flex: 0 0 50%;
+  }
+}
+@media only screen and (max-width: 800px) {
+  .PopupWrapper {
+    padding: 1rem 3rem 5rem 3rem;
+  }
+  .DesignDisplay {
+    display: block;
+    .nopadding.col,
+    .ColorPatchCol {
+      display: inline-block;
+      max-width: 50%;
+    }
+    & > .DesignNameArea {
+      display: block;
+    }
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .DesignInfoName {
+    font-size: 1.4rem;
+  }
+  .DesignDisplay {
+    & > .nopadding,
+    & > .ColorPatchCol {
+      display: block;
+      max-width: unset !important;
+    }
+  }
+  .CartOptions {
+    & > div {
+      float: none !important;
+      width: auto !important;
+    }
+    & button {
+      float: none;
     }
   }
 }

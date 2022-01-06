@@ -20,7 +20,6 @@ export const initialState ={
   export const Context =  React.createContext(initialState);
   
   export const reducer = (state, action)=>{
-    console.log(action);
     switch (action.type){
         case 'set_designCategories':
             return{

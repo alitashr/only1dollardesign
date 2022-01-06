@@ -74,12 +74,10 @@ const formReducer = (state, action) => {
   }
 };
 const checkCoupon = (code, total) => {
-  console.log(' check -- ', code, total);
   return new Promise((resolve, reject) => {
     axios
       .post('http://alternative.com.np/atcurrency/atapp.php?action=checkcoupon&id=' + code + '&total=' + total)
       .then((response) => {
-        console.log(response)
         resolve(response.data);
       })
       .catch((error) => {
@@ -89,22 +87,6 @@ const checkCoupon = (code, total) => {
 };
 const CouponForm = styled(Col)`
   margin: auto;
-`;
-const CouponSuccess = styled(CouponForm)`
-  text-align: center;
-  font-size: 1em;
-  padding: 10px;
-  line-height: 2;
-  & > div {
-    font-size: 1.2em;
-    margin: 15px;
-  }
-  & > div > span {
-    font-size: 0.9em;
-  }
-  & .thanku {
-    font-size: 2em;
-  }
 `;
 
 const Coupon = () => {
@@ -121,7 +103,6 @@ const Coupon = () => {
   useEffect(() => {
     if (couponFormState.code !== '') {
       checkCoupon(couponFormState.code, 0).then((response) => {
-        console.log('check coupon ', response)
         if (response.state) {
           dispatch({
             type: 'set_couponTotalAmt',
@@ -135,7 +116,6 @@ const Coupon = () => {
     var formData = window.sessionStorage.getItem('couponFormdata') || '';
 
     if (formData !== '') {
-      console.log(formData);
       var jsonData = JSON.parse(formData);
       dispatch({
         type: 'set_formData',
@@ -145,7 +125,6 @@ const Coupon = () => {
   }, []);
   const handleCoupon = (e) => {
     let val = e.target.value;
-    console.log('value is ' + val);
     dispatch({
       type: 'set_code',
       payload: val,
@@ -153,7 +132,6 @@ const Coupon = () => {
   };
   const handleName = (e) => {
     let val = e.target.value;
-    console.log('name is ' + val);
     dispatch({
       type: 'set_name',
       payload: val,
@@ -161,7 +139,6 @@ const Coupon = () => {
   };
   const handleEmail = (e) => {
     let val = e.target.value;
-    console.log('value is ' + val);
     dispatch({
       type: 'set_email',
       payload: val,
@@ -169,7 +146,6 @@ const Coupon = () => {
   };
 
   const handleEmailPaste = (e) => {
-    console.log('paste');
     e.preventDefault();
     return false;
   };
@@ -197,16 +173,12 @@ const Coupon = () => {
   const buyFromCoupon = (code, total) => {
     return new Promise((resolve, reject) => {
       const buyer = couponFormState.name.replace(/ /g, '-');
-      console.log('sendEmail -> buyer', buyer);
       const buyeremail = couponFormState.email;
-      console.log('sendEmail -> buyeremail', buyeremail);
 
       const filename = getZipFilename(couponFormState.name);
-      console.log(cart);
       const designArrStr = getDesignsListStr(cart);
       sessionStorage.setItem('designArrStr', designArrStr);
       const cacheId = getCacheId(cart[0].thumb);
-      console.log(cacheId);
       //https://only1dollardesigns.com/sendemail.php?buyer=alita-shrestha&buyeremail=alita@explorug.net&filename=shrestha230292&cache=AF802D76625EA3B4066EC8241EB98997&designs=Abstract/Nimrite%7CDesigners-Collection/Ageicent%7CAbstract/Heliolood%7CAbstract/Axiomio
       //https://alternative.com.np/atcurrency/atPayPal-Coupon.php?action=checkcoupon&id=ATPADMA&total=0&buyer=alita-shrestha&buyeremail=alita@explorug.net&filename=shrestha230292&cache=AF802D76625EA3B4066EC8241EB98997&designs=Nimrite&card=coupon
       axios
@@ -239,10 +211,8 @@ const Coupon = () => {
   const submitForm = (e) => {
     e.preventDefault();
     const formVerified = verifyForm();
-    console.log('form verified ', formVerified);
     if (formVerified) {
         buyFromCoupon(couponFormState.code, cart.length).then((data) => {
-        console.log(data);
         let response = data;
 
         if (response.state) {
@@ -303,19 +273,14 @@ const Coupon = () => {
   };
   
   const sendEmail = (couponFormState) => {
-    console.log(couponFormState.name);
     return new Promise((resolve, reject) => {
       const buyer = couponFormState.name.replace(/ /g, '-');
-      console.log('sendEmail -> buyer', buyer);
       const buyeremail = couponFormState.email;
-      console.log('sendEmail -> buyeremail', buyeremail);
-
+   
       const filename = getZipFilename(couponFormState.name);
-      console.log(cart);
       const designArrStr = getDesignsListStr(cart);
 
       const cacheId = getCacheId(cart[0].thumb);
-      console.log(cacheId);
       //https://only1dollardesigns.com/sendemail.php?buyer=alita-shrestha&buyeremail=alita@explorug.net&filename=shrestha230292&cache=AF802D76625EA3B4066EC8241EB98997&designs=Abstract/Nimrite%7CDesigners-Collection/Ageicent%7CAbstract/Heliolood%7CAbstract/Axiomio
       axios
         .post('http://alternative.com.np/atcurrency/sendemail1dol.php?buyer=' + buyer + '&buyeremail=' + buyeremail + '&filename=' + filename + '&cache=' + cacheId + '&designs=' + designArrStr)

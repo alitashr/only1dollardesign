@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import { Link } from "react-router-dom";
-// import {addGooglePayBtn, onGooglePayLoaded} from './GooglePay';
 
 import {
   CheckoutButton,
@@ -17,24 +15,17 @@ import {
 
 import { WholeContext } from "../App";
 import GeneralInfo from "./GeneralInfo";
-import axios from "axios";
 import { getDesignName } from "../utils/utils";
 
 const Checkout = () => {
-  console.log("----in checkout---");
   const checkoutContext = useContext(WholeContext);
-  const [NIBLIframeSrc, setNIBLIframeSrc]= useState('');
-
   let cart = checkoutContext.state.cart;
   let dispatch = checkoutContext.dispatch;
 
   cart = cart ? cart : [];
 
   useEffect(() => {
-    console.log("----in checkout--- useeffect");
-
     sessionStorage.setItem('designsCount', cart.length);
-  
   }, [cart]);
   // useEffect(()=>{
   //   const NIBLLink = NIBLcheckOutAction();
@@ -49,7 +40,6 @@ const Checkout = () => {
     console.log("item to remove " + index);
     let designcart = cart;
     designcart.splice(index, 1);
-    console.log(designcart);
     cart = designcart;
     window.sessionStorage.setItem("cart", JSON.stringify(cart));
     dispatch({
@@ -72,7 +62,6 @@ const Checkout = () => {
           "&item_name_2=Mechanic&amount_2=1" +
           "&item_name_3=Wiros Egolox&amount_3=1";
 
-    console.log(itemList);
     var link =
       "https://www.paypal.com/cgi-bin/webscr?currency_code=USD&cmd=_cart&upload=1&business=onlyhundred@explorug.net&lc=US&notify_url=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fipn%2ephp" +
       itemList +
@@ -87,7 +76,7 @@ const Checkout = () => {
 
   
   return (
-    <Col lg={{ span: 8, offset: 2 }} md={{ span: 8, offset: 2 }} sm={{ span: 8, offset: 1 }} xm={12}>
+    <Col lg={{ span: 8, offset: 2 }} md={{ span: 10, offset: 1 }} sm={{ span: 10, offset: 1 }} xm={12}>
       <CategoryTitle text={"Your Cart"} />
 
       <Row>
@@ -116,9 +105,7 @@ const Checkout = () => {
                         <div className="cartItemName">{getDesignName(item.design)}</div>
                         <div className="cartItemPrice">$1.00</div>
                       </CartInfo>
-
-                      <br clear="both" />
-                      <RemoveDesign onClick={() => removeItemFromCart(item)}></RemoveDesign>
+                      <RemoveDesign title="Remove this item from cart" onClick={() => removeItemFromCart(item)}></RemoveDesign>
                     </div>
                     <br clear="both" />
                   </CartItemWrapper>
@@ -131,7 +118,7 @@ const Checkout = () => {
             )}
             <Col lg={5} md={5} sm={6} xs={12}>
               <center>
-                <div id="googlePayContainer" style={{ marginBottom: "1em", display: "none" }}></div>
+                {/* <div id="googlePayContainer" style={{ marginBottom: "1em", display: "none" }}></div> */}
 
                 {cart.length > 0 ? (
                   <div>

@@ -1,4 +1,4 @@
-import React, { PropTypes, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -7,11 +7,13 @@ import { WholeContext } from "../../App";
 import { getCacheId, getDesignName, getZipFilename, validateEmail } from "../../utils/utils";
 import GeneralInfo from "../GeneralInfo";
 import Input from "../Input";
-import { BtnLink, CategoryTitle, CheckoutButton, CouponMsg } from "../StyledComponents";
+import { CategoryTitle, CouponMsg } from "../StyledComponents";
 
 const CheckoutVisaCard = (props) => {
   const [userInfo, setUserInfo] = useState({ name: "", email: "" });
   const [formValidation, setFormValidation] = useState(false);
+  const [hidePaymentButtonImage, setHidePaymentButtonImage] = useState(false);
+  const [isIframeFirstLoad, setIsIframeFirstLoad] = useState(true);
 
   const [errorMsg, setErrorMsg] = useState("");
   const [NIBLIframeSrc, setNIBLIframeSrc] = useState("");
@@ -26,11 +28,8 @@ const CheckoutVisaCard = (props) => {
     if (!cart || !cart.length) return;
     if (!userInfo || userInfo.name === "" || userInfo.email === "") return;
     const NIBLLink = NIBLcheckOutAction();
-    console.log("useEffect -> NIBLLink", NIBLLink);
     setNIBLIframeSrc(NIBLLink);
     //setdownloadLink
-    
-
   }, [cart, userInfo]);
 
   function getJsonFromUrl(url) {
@@ -45,19 +44,30 @@ const CheckoutVisaCard = (props) => {
   }
 
   useEffect(() => {
+    if (!formValidation) {
+      setHidePaymentButtonImage(false);
+    } else {
+      if (isIframeFirstLoad) {
+        setTimeout(() => {
+          setIsIframeFirstLoad(false);
+          setHidePaymentButtonImage(true);
+        }, 3000);
+      } else {
+        setHidePaymentButtonImage(true);
+      }
+    }
+  }, [formValidation]);
+  useEffect(() => {
     if (!NIBLIframeSrc) return;
     let params = getJsonFromUrl(NIBLIframeSrc);
 
     var designList = [];
     designList = cart.map((item) => getDesignName(item.design));
-    console.log("NIBLcheckOutAction -> designList", designList);
 
     let designPathArr = cart.map((item) => item.design);
     const cacheId = params.cacheId;
     const filename = params.filename;
 
-    
-    console.log(cacheId, filename, designList);
 
     AppNewProvider.postListForEmail({
       designpathlist: JSON.stringify(designPathArr),
@@ -85,7 +95,6 @@ const CheckoutVisaCard = (props) => {
   };
   const validateVisaCardForm = (userInfo) => {
     setErrorMsg("");
-    console.log("validateVisaCardForm -> userInfo", userInfo);
     let validated = false;
 
     if (userInfo.name && userInfo.name !== "" && userInfo.email && userInfo.email !== "") {
@@ -94,12 +103,10 @@ const CheckoutVisaCard = (props) => {
       }
     }
     if (formValidation !== validated) {
-      console.log("validateVisaCardForm -> formValidation!==validated", formValidation, validated);
-
       setFormValidation(validated);
     }
   };
- 
+
   const showErrorMsg = () => {
     if (!formValidation) {
       setErrorMsg("Please enter your name and email address");
@@ -112,16 +119,21 @@ const CheckoutVisaCard = (props) => {
     console.log("NIBLcheckOutAction -> designList", designList);
 
     let designPathArr = cart.map((item) => item.design);
-    console.log("NIBLcheckOutAction -> designPathArr", designPathArr);
 
     const cacheId = cart && cart.length ? getCacheId(cart[0].thumb) : "";
     const filename = getZipFilename(userInfo.name);
-    console.log(cacheId, filename, designList);
 
-    sessionStorage.setItem('downloadLink', `https://v3.explorug.com/Only1DollarDesign/${filename}.zip`);
+    //let designPathArr = cart.map((item) => item.design);
+
+    sessionStorage.setItem("downloadLink", `https://v3.explorug.com/Only1DollarDesign/${filename}.zip`);
     var link =
-    paymentProvider+ "?itemlist=" +
+      paymentProvider +
+      "?itemlist=" +
       JSON.stringify(designList) +
+      "&designpathlist=" +
+      JSON.stringify(designPathArr) +
+      "&key=" +
+      getApiKey() +
       "&name=" +
       userInfo.name +
       "&email=" +
@@ -168,17 +180,22 @@ const CheckoutVisaCard = (props) => {
           <div className="errorMsg">{errorMsg !== "" ? <CouponMsg>{errorMsg}</CouponMsg> : null}</div>
           <div className="checkoutButtons">
             <div className="paymentButton">
-              <button className="paymentButton-image" type="submit"> <img
-                style={{ display: !formValidation ? "block" : "none" }}
-                src="https://explorug.com/archanastools/niblpayment/TrialPageAssets/Pay-with-card.jpg"
-                onClick={showErrorMsg}
-                alt="visa card button"
-              />
+              <button
+                className="paymentButton-image"
+                type="submit"
+                // style={{ display: !formValidation ? "block" : "none" }}
+                style={{ display: !hidePaymentButtonImage ? "block" : "none" }}
+              >
+                <img
+                  src="https://explorug.com/archanastools/niblpayment/TrialPageAssets/Pay-with-card.jpg"
+                  onClick={showErrorMsg}
+                  alt="visa card button"
+                />
               </button>
 
               <iframe
                 src={NIBLIframeSrc}
-                style={{ display: formValidation ? "block" : "none" }}
+                style={{ display: hidePaymentButtonImage ? "block" : "none" }}
                 frameBorder="0"
                 height="50"
                 width="210"

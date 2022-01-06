@@ -84,7 +84,6 @@ const getDesignsListStr = (cart) => {
     const lastBarPos = designArrStr.lastIndexOf('|');
     designArrStr = designArrStr.substr(0, lastBarPos);
     designArrStr = designArrStr.replace(/ /g, '-');
-    console.log(designArrStr);
     return designArrStr;
 };
   

@@ -9,7 +9,7 @@ export const domain = "https://v3.explorug.com";
 let provider = "appproviderv3.aspx";
 const API_KEY = "apikey";
 
-export const paymentProvider = "http://192.168.1.136/nibl/O1DDPayNPR.aspx";// "https://explorug.com/archanastools/niblpayment/O1DDPayNPR.aspx"; //"http://192.168.1.135/nibl/O1DDPayNPR.aspx";// 
+export const paymentProvider = "https://explorug.com/archanastools/niblpayment/O1DDPayNPR.aspx";//"http://192.168.1.136/nibl/O1DDPayNPR.aspx"; //"http://192.168.1.135/nibl/O1DDPayNPR.aspx";// 
 const postHttpClient = (data, config) =>
   HttpClient.post(`${domain}/${provider}`, data, config).then((response) => response.data);
 
@@ -42,7 +42,6 @@ const fetchApiKey = ({ username, password }) => {
   return new Promise((resolve, reject) => {
     postWithRetry(data)
       .then((res) => {
-        console.log(res);
         const key = res.Key;
         if (!key || key === "") reject("INVALID CREDENTIALS");
         else {
@@ -60,7 +59,6 @@ const fetchDesignList = (params) => {
   let data = new FormData();
   data.append("action", "designlist");
   data.append("key", getApiKey());
-  console.log(getApiKey());
   return new Promise((resolve, reject) => {
     postWithRetry(data)
       .then((res) => {
@@ -74,7 +72,6 @@ const fetchDesignList = (params) => {
   });
 };
 const fetchDesignThumbNails = ({ designsFullPathlist, backColor = "#ffffff" }) => {
-  console.log(designsFullPathlist);
   let data = new FormData();
   data.append("action", "designthumbs");
   data.append("key", getApiKey());
@@ -84,8 +81,6 @@ const fetchDesignThumbNails = ({ designsFullPathlist, backColor = "#ffffff" }) =
   return new Promise((resolve, reject) => {
     postWithRetry(data)
       .then((res) => {
-        console.log("response from fetch designthumbs");
-        console.log(res);
         const data = res;
         if (data === "") reject("designthumbs is blank");
         else {
@@ -127,9 +122,6 @@ const fetchVisualizationTiles = ({ file, zoom, tiles, props, felt = 0 }) => {
   data.append("tiles", JSON.stringify(tiles));
   if (props) data.append("props", JSON.stringify(props));
   return postHttpClient(data).then((path) => {
-    console.log("returnpostHttpClient -> path", path);
-    // const s = path.split("\\")
-    // s.splice(3).join("/")
     return `${AppNewProvider.domain}${path}`;
   });
 };
@@ -153,8 +145,6 @@ const getRenderedDesign = async ({
 
     if (!applyKLRatio) KLRatio = 1;
     const canvas = createCanvas(canvasWidth, canvasHeight * KLRatio);
-    console.log("returnnewPromise -> canvasWidth, canvasHeight* KLRatio", canvasWidth, canvasHeight * KLRatio);
-
     let xTotal = Math.floor((canvasWidth - 1) / 256) + 1;
     let yTotal = Math.floor((canvasHeight - 1) / 256) + 1;
     let tilepoints2X = [];
@@ -217,9 +207,6 @@ const payNPR = async({itemlist, returnUrl, cancelUrl, name, email, cacheId, zipF
   
   //if (props) data.append("props", JSON.stringify(props));
   return postPaymentClient(data).then((path) => {
-    console.log("returnpostHttpClient -> path", path);
-    // const s = path.split("\\")
-    // s.splice(3).join("/")
     return data;
   });
 }
@@ -233,7 +220,6 @@ const postListForEmail = async ({designpathlist, itemlist, name, email, cacheId,
   data.append("cacheId", cacheId);
   data.append("filename", zipFilename);
   return postPaymentClient(data).then((path) => {
-    console.log("postListForEmail -> path", path);
     return data;
   });
 }

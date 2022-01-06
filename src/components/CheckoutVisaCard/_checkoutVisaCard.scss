@@ -33,9 +33,13 @@
   max-width: 90%;
   min-width: 12rem;
 }
-.paymentButton-image{
+.paymentButton-image {
   border: none;
-  &:hover, &:active, &:focus{
+  opacity: 0.7;
+  cursor: not-allowed !important;
+  &:hover,
+  &:active,
+  &:focus {
     border: none;
     outline: none;
   }

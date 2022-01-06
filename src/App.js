@@ -1,5 +1,5 @@
-import React, { useEffect, useReducer } from "react";
-import { HashRouter as Router, Switch, Route } from "react-router-dom";
+import React, { useEffect, useReducer, useState } from "react";
+import { HashRouter as Router, Route } from "react-router-dom";
 
 import "./App.css";
 import "./index.scss";
@@ -108,29 +108,25 @@ const openTOU = () => {
 };
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [year, setYear] = useState("");
 
   useEffect(() => {
+    const d = new Date();
+    let year = d.getFullYear();
+    setYear(year);
     login().then((key) => {
-      console.log("App -> key", key);
       AppNewProvider.fetchDesignList().then((data) => {
-        console.log(data);
         let designs = UtilitiesFn.GetDesigns(data);
-        console.log("App -> designs", designs);
         let folders = UtilitiesFn.GetFolders(data);
         initialState.designList = designs;
         initialState.designCategories = folders;
         initialState.key = key;
-        console.log("initial key " + initialState.key);
         dispatch({
           type: "set_designCategories",
           payload: folders,
         });
-
         LoadPage(0, true);
       });
-      //   app.GetDesignList(key).then((data)=>{
-
-      //    });
     });
   }, []);
   useEffect(() => {
@@ -160,7 +156,6 @@ const App = () => {
   };
 
   const handlePageChange = (direction) => {
-    console.log(direction);
     let currentPage = UtilitiesFn.GetNewPageNumber(direction, initialState.currentPage, initialState.totalPages);
     LoadPage(currentPage);
   };
@@ -181,21 +176,16 @@ const App = () => {
   }
 
   const selectDesign = (selectedDesign, selectedThumb) => {
-    // dispatch({
-    //     type: 'set_designLoading',
-    //     payload: true
-    // });
-    dispatch({ type: "set_BusySignal", payload: true });
+    dispatch({
+      type: "set_designLoading",
+      payload: true,
+    });
+    //dispatch({ type: "set_BusySignal", payload: true });
 
     var designElem = search(selectedDesign, initialState.designThumbs);
     var designdetails = designElem.Props;
 
-    // AppNewProvider.fetchDesignDetails({selectedDesign}).then((designdetails)=>{
-    console.log(designdetails);
     AppNewProvider.getRenderedDesign({ designDetails: designdetails, fullpath: selectedDesign }).then((canvas) => {
-      console.log("AppNewProvider.getRenderedDesign -> canvas", canvas.width, canvas.height);
-      //setDesignPath(canvas.toDataURL());
-      //send designcanvas
       dispatch({
         type: "set_designCanvas",
         payload: canvas,
@@ -232,21 +222,21 @@ const App = () => {
       });
     });
 
-    // })
   };
   const handleDesignChange = (direction) => {
     let designthumbArray = initialState.designThumbs;
     let { index, currentPage, loadNewPage } = indexVariables(direction);
     if (loadNewPage) {
       LoadPage(currentPage, false).then((thumbList) => {
-        console.log(thumbList);
+        // console.log(thumbList);
         initialState.selectedDesign = thumbList[index].Name;
-        initialState.selectedThumb = APIdomain + thumbList[index].Value;
+        initialState.selectedThumb = APIdomain + thumbList[index].Thumb;
         selectDesign(initialState.selectedDesign, initialState.selectedThumb);
       });
     } else {
       initialState.selectedDesign = designthumbArray[index].Name;
-      initialState.selectedThumb = APIdomain + designthumbArray[index].Value;
+      initialState.selectedThumb = APIdomain + designthumbArray[index].Thumb;
+      console.log("handleDesignChange -> initialState.selectedThumb", initialState.selectedThumb, designthumbArray);
       selectDesign(initialState.selectedDesign, initialState.selectedThumb);
     }
   };
@@ -281,7 +271,7 @@ const App = () => {
 
               <SocialMediaShare />
               <Copyright id="copyright" textCenter>
-                © Alternative Technology 2021 - All rights reserved
+                © Alternative Technology {year} - All rights reserved
                 <div>
                   <FooterLinks onClick={openTOU}>Terms of Use</FooterLinks>
                 </div>

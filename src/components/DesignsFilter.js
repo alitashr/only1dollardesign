@@ -5,9 +5,6 @@ import {WholeContext} from '../App';
 
 
 function DesignsFilter(){
-    // const filterContext = useContext(FilterContext);
-    // let filters = filterContext.selectedFilters;
-
     const filterContext = useContext(WholeContext);
     let filters = filterContext.state.selectedFilters;
 
