@@ -66,7 +66,7 @@ const Thankyou = props => {
                 <br/>
                 </>
             }
-                   
+            
             You will also receive an email with the download link.
             <br />
             Do not forget to check spam/junk as well.

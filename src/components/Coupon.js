@@ -10,6 +10,7 @@ import GeneralInfo from './GeneralInfo';
 import {WholeContext} from '../App';
 import Thankyou from './Thankyou';
 import { getDesignsListStr } from '../utils/utils';
+import { getApiKey } from '../api/appProvider';
 
 let errorMsgs = ['Must match the previous entry', 'Coupon code is not valid', 'Not enough coupon balance to checkout', '**Please fill up the form', 'Coupon has been expired'];
 
@@ -195,12 +196,18 @@ const Coupon = () => {
             filename +
             '&cache=' +
             cacheId +
+            "&key=" +
+            getApiKey() +
             '&designs=' +
             designArrStr +
             '&card=coupon'
         )
         .then((response) => {
-            console.log(response)
+            console.log('bbuy rom coupon ',response)
+            const downloadLink = `https://v3.explorug.com/Only1DollarDesign/${filename}.zip`;
+          sessionStorage.setItem("downloadLink", downloadLink);
+          setDownloadLink(downloadLink)
+   
           resolve(response.data);
         })
         .catch((error) => {
@@ -223,9 +230,10 @@ const Coupon = () => {
           //couponTotalAmt
           sessionStorage.setItem('couponTotalAmt', couponFormState.couponTotalAmt);
           sessionStorage.setItem('designsCount', cart.length);
-          sessionStorage.setItem('downloadLink', response.name);
+         
+         // sessionStorage.setItem('downloadLink', response.name);
           setDesignsCount(cart.length);
-          setDownloadLink(response.name)
+          //setDownloadLink(response.name)
 
           emptyCart();
           storeFormInSession();

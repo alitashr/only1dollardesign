@@ -6,6 +6,10 @@ export const convertArrintoDeg = arrRad => {
   return arrRad.map(angle => (angle * 180) / Math.PI);
 };
 
+export const createUriSafe = (uriString) => {
+  const enc = uriString.split("/").map(encodeURIComponent);
+  return enc.join("/");
+};
 export function fitImageToContainer(image, container) {
   let { width: containerwidth, height: containerheight } = container
   let { width: imagewidth, height: imageheight } = image
@@ -320,3 +324,26 @@ export const getZipFilename = (buyerName) => {
   let filename = buyerStr + randomNum; //"shrestha230292";
   return filename;
 };
+
+const canvas = document.createElement("canvas");
+
+// export const getLogoCanvas = (logourl) => {
+//   return new Promise((resolve, reject) => {
+  
+//       var image = new Image();
+//       image.src = `${logourl}/icons/logo.png`;
+//       const cxt = canvas.getContext("2d");
+
+//       image.onload = function () {
+//         canvas.width = image.width;
+//         canvas.height = image.height;
+//         cxt?.drawImage(image, 0, 0, image.width, image.height);
+//         mainLogoImgLoaded = true;
+//         resolve(canvas);
+//       };
+//       image.onerror = function () {
+//         reject("could not load logo image");
+//       };
+    
+//   });
+// };
