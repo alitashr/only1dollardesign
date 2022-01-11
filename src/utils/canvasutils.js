@@ -1,5 +1,29 @@
 import { readImage } from "./utils";
+var mainLogoImgLoaded = false;
+const canvas = document.createElement("canvas");
 
+export const getLogoCanvas = (logoUrl='../images/logo.png') => {
+  return new Promise((resolve, reject) => {
+    if (mainLogoImgLoaded) {
+      resolve(canvas);
+    } else {
+      var image = new Image();
+      image.src = logoUrl;
+      const cxt = canvas.getContext("2d");
+
+      image.onload = function () {
+        canvas.width = image.width;
+        canvas.height = image.height;
+        cxt.drawImage(image, 0, 0, image.width, image.height);
+        mainLogoImgLoaded = true;
+        resolve(canvas);
+      };
+      image.onerror = function () {
+        reject("could not load logo image");
+      };
+    }
+  });
+};
 export const createCanvas = (w, h) => {
   var canvas = document.createElement("canvas");
   canvas.width = w;

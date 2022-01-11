@@ -185,7 +185,7 @@ const App = () => {
     var designElem = search(selectedDesign, initialState.designThumbs);
     var designdetails = designElem.Props;
 
-    AppNewProvider.getRenderedDesign({ designDetails: designdetails, fullpath: selectedDesign }).then((canvas) => {
+    AppNewProvider.getFullRenderedDesign({ designDetails: designdetails, fullpath: selectedDesign }).then((canvas) => {
       dispatch({
         type: "set_designCanvas",
         payload: canvas,
@@ -236,7 +236,7 @@ const App = () => {
     } else {
       initialState.selectedDesign = designthumbArray[index].Name;
       initialState.selectedThumb = APIdomain + designthumbArray[index].Thumb;
-      console.log("handleDesignChange -> initialState.selectedThumb", initialState.selectedThumb, designthumbArray);
+      //console.log("handleDesignChange -> initialState.selectedThumb", initialState.selectedThumb, designthumbArray);
       selectDesign(initialState.selectedDesign, initialState.selectedThumb);
     }
   };

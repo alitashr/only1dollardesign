@@ -314,7 +314,6 @@ export const getDesignsListStr = (cart) => {
   const lastBarPos = designArrStr.lastIndexOf('|');
   designArrStr = designArrStr.substr(0, lastBarPos);
   designArrStr = designArrStr.replace(/ /g, '-');
-  console.log(designArrStr);
   return designArrStr;
 };
 
@@ -324,26 +323,3 @@ export const getZipFilename = (buyerName) => {
   let filename = buyerStr + randomNum; //"shrestha230292";
   return filename;
 };
-
-const canvas = document.createElement("canvas");
-
-// export const getLogoCanvas = (logourl) => {
-//   return new Promise((resolve, reject) => {
-  
-//       var image = new Image();
-//       image.src = `${logourl}/icons/logo.png`;
-//       const cxt = canvas.getContext("2d");
-
-//       image.onload = function () {
-//         canvas.width = image.width;
-//         canvas.height = image.height;
-//         cxt?.drawImage(image, 0, 0, image.width, image.height);
-//         mainLogoImgLoaded = true;
-//         resolve(canvas);
-//       };
-//       image.onerror = function () {
-//         reject("could not load logo image");
-//       };
-    
-//   });
-// };

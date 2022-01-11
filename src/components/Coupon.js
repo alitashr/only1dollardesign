@@ -203,7 +203,6 @@ const Coupon = () => {
             '&card=coupon'
         )
         .then((response) => {
-            console.log('bbuy rom coupon ',response)
             const downloadLink = `https://v3.explorug.com/Only1DollarDesign/${filename}.zip`;
           sessionStorage.setItem("downloadLink", downloadLink);
           setDownloadLink(downloadLink)

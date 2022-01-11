@@ -46,7 +46,7 @@ const FullDesign = (props) => {
     }
 
     imageRef.current.src = designCanvas.toDataURL();
-
+ 
     // imageRef.current.style.width = `${designCanvas.width}px`;
     // imageRef.current.style.height = `${designCanvas.height}px`;
   }, [designCanvas]);

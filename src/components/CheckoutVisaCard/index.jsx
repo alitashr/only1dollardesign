@@ -116,8 +116,7 @@ const CheckoutVisaCard = (props) => {
   const NIBLcheckOutAction = () => {
     var designList = [];
     designList = cart.map((item) => getDesignName(item.design));
-    console.log("NIBLcheckOutAction -> designList", designList);
-
+  
     let designPathArr = cart.map((item) => item.design);
 
     const cacheId = cart && cart.length ? getCacheId(cart[0].thumb) : "";
