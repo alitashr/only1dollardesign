@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { PayPalScriptProvider, PayPalButtons, FUNDING } from "@paypal/react-paypal-js";
 
 import { Form } from "react-bootstrap";
 import { Col } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AppNewProvider, { getApiKey, paymentProvider } from "../../api/appProvider";
 import { WholeContext } from "../../App";
 import { getCacheId, getDesignName, getDesignsListStr, getZipFilename, validateEmail } from "../../utils/utils";
@@ -13,11 +13,13 @@ import Input from "../Input";
 import { BtnLink, CategoryTitle, CheckoutButton, CouponMsg } from "../StyledComponents";
 
 const CheckoutPaypal = (props) => {
+  //const history = useHistory();
+  const navigate = useNavigate();
+
   const [userInfo, setUserInfo] = useState({ name: "", email: "" });
   const [formValidation, setFormValidation] = useState(false);
-  const [hidePaymentButtonImage, setHidePaymentButtonImage] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const [isIframeFirstLoad, setIsIframeFirstLoad] = useState(true);
+  const [paymentComplete, setPaymentComplete] = useState(false);
 
   const checkoutContext = useContext(WholeContext);
   let cart = checkoutContext.state.cart;
@@ -34,20 +36,19 @@ const CheckoutPaypal = (props) => {
     return result;
   }
 
+  //const handleOnClick = useCallback(() => history.push('/sample'), [history]);
+
   useEffect(() => {
-    if (!formValidation) {
-      setHidePaymentButtonImage(false);
-    } else {
-      if (isIframeFirstLoad) {
-        setTimeout(() => {
-          setIsIframeFirstLoad(false);
-          setHidePaymentButtonImage(true);
-        }, 3000);
-      } else {
-        setHidePaymentButtonImage(true);
-      }
+    if (paymentComplete) {
+      sendEmail(userInfo).then(()=>{
+        //useCallback(() => history.push('/sample'), [history]);
+        //history.push('/thank');
+       // handleOnClick()
+       navigate('/thank')
+      });
+      setPaymentComplete(false);
     }
-  }, [formValidation]);
+  }, [paymentComplete]);
 
   const handleNameChange = (e) => {
     let val = e.target.value;
@@ -76,45 +77,13 @@ const CheckoutPaypal = (props) => {
   };
 
   const showErrorMsg = () => {
+    console.log(userInfo);
     if (!formValidation) {
       setErrorMsg("Please enter your name and email address");
     }
   };
 
-  const checkOutAction = () => {
-    var itemList = "";
-    cart.forEach((element, index) => {
-      let i = index + 1;
-      itemList += "&item_name_" + i + "=" + getDesignName(element.design) + "&amount_" + i + "=1";
-    });
-
-    //sendEmail(userInfo);
-    sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
-    console.log("checkOutAction -> userInfo", userInfo, cart);
-    //window.location = "http://localhost:3000/index.html#/payment";
-
-    //for now
-    // itemList =
-    //   itemList !== ""
-    //     ? itemList
-    //     : "&item_name_1=Lunazoph&amount_1=1" +
-    //       "&item_name_2=Mechanic&amount_2=1" +
-    //       "&item_name_3=Wiros Egolox&amount_3=1";
-
-    var link =
-      "https://www.paypal.com/cgi-bin/webscr?currency_code=USD&cmd=_cart&upload=1&business=sb-nemls7012451@business.example.com&lc=US&notify_url=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fipn%2ephp" +
-      itemList +
-      //"&custom=543a385a-cbe8-4aae-bd17-a06e31cc8e93"+
-      "&button_subtype=services&no_note=1&no_shipping=1&rm=1" +
-      "&return=http%3a%2f%2fwww%2eonly1dollardesigns%2ecom%2fpayment" +
-      "&cancel_return=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fhelp&bn=PP%2dBuyNowBF%3abtn_buynow_LG%2egif%3aNonHosted";
-    console.log(link);
-
-    window.location = link;
-  };
-
   const sendEmail = (userInfo) => {
-    console.log("sendEmail -> userInfo", userInfo);
     return new Promise((resolve, reject) => {
       const buyer = userInfo.name.replace(/ /g, "-");
       const buyeremail = userInfo.email;
@@ -135,13 +104,13 @@ const CheckoutPaypal = (props) => {
         cacheId +
         "&designs=" +
         designArrStr;
-      console.log("returnnewPromise -> url", url);
-
-      //https://only1dollardesigns.com/sendemail.php?buyer=alita-shrestha&buyeremail=alita@explorug.net&filename=shrestha230292&cache=AF802D76625EA3B4066EC8241EB98997&designs=Abstract/Nimrite%7CDesigners-Collection/Ageicent%7CAbstract/Heliolood%7CAbstract/Axiomio
+      //      console.log("returnnewPromise -> url", url);
       axios
         .post(url)
         .then((response) => {
-          console.log("data after sendemail", response.data);
+          const downloadLink = `https://v3.explorug.com/Only1DollarDesign/${filename}.zip`;
+          sessionStorage.setItem("downloadLink", downloadLink);
+        
           resolve(response.data);
         })
         .catch((error) => {
@@ -166,10 +135,8 @@ const CheckoutPaypal = (props) => {
 
   const onApprove = (data, actions) => {
     return actions.order.capture().then(async function (orderData) {
-      console.log("orderData", orderData);
-      sendEmail(userInfo);
-      //setdesignFinalUploading('paypal');
-      //onPaymentSuccess();
+      console.log("orderData", orderData, "userInfo", userInfo);
+      setPaymentComplete(true);
     });
   };
 
@@ -208,24 +175,18 @@ const CheckoutPaypal = (props) => {
           <div className="errorMsg">{errorMsg !== "" ? <CouponMsg>{errorMsg}</CouponMsg> : null}</div>
           <div className="checkoutButtons">
             <div className="checkout-back-button">
-              {/* <CheckoutButton inlineBlock onClick={checkOutAction}>
-                <strong>
-                  <span>Use Paypal</span>
-                </strong>
-
-                <br />
-              </CheckoutButton> */}
-              
-              <div className="checkout-back-button" style={{ display: !hidePaymentButtonImage ? "block" : "none" }}
-               onClick={showErrorMsg}
-               >
+              <div
+                className="checkout-back-button"
+                style={{ display: !formValidation ? "block" : "none" }}
+                onClick={showErrorMsg}
+              >
                 <div className="galaincha-buttons">
                   <div className="galaincha-buttons back-button">
                     <span>Use Paypal</span>
                   </div>
                 </div>
               </div>
-              <div style={{ display: !hidePaymentButtonImage ? "none" : "block" }}>
+              <div style={{ display: !formValidation ? "none" : "block" }}>
                 <PayPalScriptProvider
                   options={{
                     "client-id": "AfwdJe28NtRL8n0tlLZMxWngJtnJZ-KN0Ep_JSYl4bRVz0EkF_99InvNtQYlWXu4eX9ys207UKBCyUvU",

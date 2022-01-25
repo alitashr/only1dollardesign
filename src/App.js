@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useState } from "react";
-import { HashRouter as Router, Route } from "react-router-dom";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
 
 import "./App.css";
 import "./index.scss";
@@ -22,7 +22,6 @@ import AppNewProvider from "./api/appProvider";
 import CheckoutVisaCard from "./components/CheckoutVisaCard";
 import PaymentFailPage from "./components/PaymentFailPage";
 import CheckoutPaypal from "./components/CheckoutPaypal";
-import SendEmail from "./components/SendEmail";
 
 let designsPerPage = 10;
 let APIdomain = AppNewProvider.domain;
@@ -183,7 +182,7 @@ const App = () => {
       payload: true,
     });
     //dispatch({ type: "set_BusySignal", payload: true });
-    
+
     var designElem = search(selectedDesign, initialState.designThumbs);
     var designdetails = designElem.Props;
 
@@ -223,7 +222,6 @@ const App = () => {
         payload: firstDesign,
       });
     });
-
   };
   const handleDesignChange = (direction) => {
     let designthumbArray = initialState.designThumbs;
@@ -260,16 +258,16 @@ const App = () => {
           >
             <Router>
               {/* <Switch> */}
-              <Route exact path="/" component={DesignsPage} />
-              <Route exact path="/faq" component={FAQ} />
-              <Route exact path="/checkout" component={Checkout} />
-              <Route exact path="/thank" component={ThankyouPage} />
-              <Route exact path="/payment_fail" component={PaymentFailPage} />
-              <Route exact path="/coupon" component={Coupon} />
-              <Route exact path="/visacard" component={CheckoutVisaCard} />
-              <Route exact path="/paypal" component={CheckoutPaypal} />
-              <Route exact path="/payment" component={SendEmail} />
-
+              <Routes>
+                <Route path="/" element={<DesignsPage />} />
+                <Route path="faq" element={<FAQ />} />
+                <Route exact path="/checkout" element={<Checkout/>} />
+                <Route exact path="/thank" element={<ThankyouPage/>} />
+                <Route exact path="/payment_fail" element={<PaymentFailPage/>} />
+                <Route exact path="/coupon" element={<Coupon/>} />
+                <Route exact path="/visacard" element={<CheckoutVisaCard/>} />
+                <Route exact path="/paypal" element={<CheckoutPaypal/>} />
+              </Routes>
               {/* render={ (props) => <Checkout data= {state.cart} {...props} removeItemFromCart ={removeItemFromCart} />}/> */}
               {/* </Switch> */}
 

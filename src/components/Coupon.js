@@ -279,27 +279,6 @@ const Coupon = () => {
     let filename = buyerStr + randomNum; //"shrestha230292";
     return filename;
   };
-  
-  const sendEmail = (couponFormState) => {
-    return new Promise((resolve, reject) => {
-      const buyer = couponFormState.name.replace(/ /g, '-');
-      const buyeremail = couponFormState.email;
-   
-      const filename = getZipFilename(couponFormState.name);
-      const designArrStr = getDesignsListStr(cart);
-
-      const cacheId = getCacheId(cart[0].thumb);
-      //https://only1dollardesigns.com/sendemail.php?buyer=alita-shrestha&buyeremail=alita@explorug.net&filename=shrestha230292&cache=AF802D76625EA3B4066EC8241EB98997&designs=Abstract/Nimrite%7CDesigners-Collection/Ageicent%7CAbstract/Heliolood%7CAbstract/Axiomio
-      axios
-        .post('https://alternative.com.np/atcurrency/sendemail1dol.php?buyer=' + buyer + '&buyeremail=' + buyeremail + '&filename=' + filename + '&cache=' + cacheId + '&designs=' + designArrStr)
-        .then((response) => {
-          resolve(response.data);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
-  };
 
   return (
     <Col lg={{span: 8, offset: 2}} md={{span: 8, offset: 2}} sm={{span: 8, offset: 1}} xm={12}>

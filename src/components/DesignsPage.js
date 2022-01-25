@@ -11,6 +11,7 @@ import {WholeContext} from '../App';
 
 
 const DesignsPage = (props) => {
+console.log("DesignsPage -> props", props)
 
     const checkoutContext = useContext(WholeContext);
     let selectedDesign = checkoutContext.state.selectedDesign;
