@@ -25,15 +25,14 @@ const Checkout = () => {
   cart = cart ? cart : [];
 
   useEffect(() => {
-    sessionStorage.setItem('designsCount', cart.length);
+    sessionStorage.setItem("designsCount", cart.length);
   }, [cart]);
   // useEffect(()=>{
   //   const NIBLLink = NIBLcheckOutAction();
   //   console.log("useEffect -> NIBLLink", NIBLLink)
   //   setNIBLIframeSrc(NIBLLink);
-    
-  // }, [cart])
 
+  // }, [cart])
 
   const removeItemFromCart = (item) => {
     let index = cart.indexOf(item);
@@ -73,7 +72,6 @@ const Checkout = () => {
     //window.location = link;
   };
 
-  
   return (
     <Col lg={{ span: 8, offset: 2 }} md={{ span: 10, offset: 1 }} sm={{ span: 10, offset: 1 }} xm={12}>
       <CategoryTitle text={"Your Cart"} />
@@ -104,7 +102,10 @@ const Checkout = () => {
                         <div className="cartItemName">{getDesignName(item.design)}</div>
                         <div className="cartItemPrice">$1.00</div>
                       </CartInfo>
-                      <RemoveDesign title="Remove this item from cart" onClick={() => removeItemFromCart(item)}></RemoveDesign>
+                      <RemoveDesign
+                        title="Remove this item from cart"
+                        onClick={() => removeItemFromCart(item)}
+                      ></RemoveDesign>
                     </div>
                     <br clear="both" />
                   </CartItemWrapper>
@@ -121,23 +122,25 @@ const Checkout = () => {
 
                 {cart.length > 0 ? (
                   <div>
-                    <CheckoutButton onClick={checkOutAction}>
-                      <strong>
-                        Checkout
-                        <br />
-                        PayPal
-                      </strong>
-                      <br />${cart.length}.00 Total buy
-                    </CheckoutButton>
+                    <BtnLink to={{ pathname: "/paypal" }}>
+                      <CheckoutButton>
+                        <strong>
+                          Checkout
+                          <br />
+                          PayPal
+                        </strong>
+                        <br />${cart.length}.00 Total buy
+                      </CheckoutButton>
+                    </BtnLink>
                     <BtnLink to={{ pathname: "/visacard" }}>
-                    <CheckoutButton marginTop="10px">
-                      <strong>
-                        Checkout
-                        <br />
-                        VISA Card
-                      </strong>
-                      <br />${cart.length}.00 Total buy
-                    </CheckoutButton>
+                      <CheckoutButton marginTop="10px">
+                        <strong>
+                          Checkout
+                          <br />
+                          VISA Card
+                        </strong>
+                        <br />${cart.length}.00 Total buy
+                      </CheckoutButton>
                     </BtnLink>
                     {/* <iframe
                       src={NIBLIframeSrc}

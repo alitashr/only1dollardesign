@@ -1,0 +1,58 @@
+.galaincha-buttons {
+  font-size: 16px;
+  font-family: Trebuchet MS;
+  width: 200px;
+  height: 40px;
+  border-width: 1px;
+  color: #fff;
+  border-color: #566963;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  box-shadow: inset 0px 1px 3px 0px #91b8b3;
+  text-shadow: inset 0px -1px 0px #2b665e;
+  background: linear-gradient(rgba(80, 122, 154, 1), rgba(46, 80, 108, 1));
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  &:hover{
+    background: linear-gradient(#2e506c, #507a9a);
+    color: #fff;
+    text-decoration: none;
+  }
+ 
+}
+
+.checkoutButtons {
+  display: flex;
+  justify-content: space-evenly;
+}
+.checkout-form-container {
+  width: 30rem;
+  max-width: 90%;
+  min-width: 12rem;
+}
+.paymentButton-image {
+  border: none;
+  opacity: 0.7;
+  cursor: not-allowed !important;
+  &:hover,
+  &:active,
+  &:focus {
+    border: none;
+    outline: none;
+  }
+}
+@media screen and (max-width: 800px) {
+  .checkoutButtons {
+    flex-direction: column;
+    height: 7rem;
+    align-items: center;
+  }
+}
+.checkout-back-button{
+  margin-bottom: 0.5rem;
+}

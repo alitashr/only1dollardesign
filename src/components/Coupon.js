@@ -9,7 +9,7 @@ import GeneralInfo from './GeneralInfo';
 
 import {WholeContext} from '../App';
 import Thankyou from './Thankyou';
-import { getDesignsListStr } from '../utils/utils';
+import { getCacheId, getDesignsListStr } from '../utils/utils';
 import { getApiKey } from '../api/appProvider';
 
 let errorMsgs = ['Must match the previous entry', 'Coupon code is not valid', 'Not enough coupon balance to checkout', '**Please fill up the form', 'Coupon has been expired'];
@@ -300,26 +300,7 @@ const Coupon = () => {
         });
     });
   };
-  // const getDesignsListStr = (cart) => {
-  //   let designArrStr = '';
-  //   cart.forEach((element) => {
-  //     let design = element.design.replace('Designs/', '').replace('.ctf', '');
-  //     designArrStr += design + '|';
-  //   });
-  //   const lastBarPos = designArrStr.lastIndexOf('|');
-  //   designArrStr = designArrStr.substr(0, lastBarPos);
-  //   designArrStr = designArrStr.replace(/ /g, '-');
-  //   console.log(designArrStr);
-  //   return designArrStr;
-  // };
-  const getCacheId = (designPath) => {
-    //to change
-    //designPath: "https://v3.explorug.com/dev/Static/AF802D76625EA3B4066EC8241EB98997/Designs/Abstract/Beeth Anten.thumb.jpg"
-    const startPos = designPath.lastIndexOf('Assets/') + 7;
-    const endPos = designPath.lastIndexOf('/Designs');
-    const cacheId = designPath.substr(startPos, endPos - startPos);
-    return cacheId;
-  };
+
   return (
     <Col lg={{span: 8, offset: 2}} md={{span: 8, offset: 2}} sm={{span: 8, offset: 1}} xm={12}>
       <CategoryTitle text={'Checkout using coupon'} marginbottom="2em" />

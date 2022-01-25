@@ -1,6 +1,7 @@
 .btn-primary:focus{
   box-shadow: none;
 }
+@import "./components/CheckoutPaypal/CheckoutPaypal";
 @import "./components/FullDesign/FullDesign";
 @import "./components/CheckoutVisaCard/checkoutVisaCard";
 @import "./components/PaymentFailPage/PaymentFailPage";

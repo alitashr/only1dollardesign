@@ -1,0 +1,13 @@
+.sendemail-message{
+  text-align: center;
+  font-size: 1em;
+  padding: 10px;
+  line-height: 2;
+  & > div {
+    font-size: 1.2em;
+    margin: 15px;
+  }
+  & > div > span {
+    font-size: 0.9em;
+  }
+}

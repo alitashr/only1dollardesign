@@ -21,6 +21,8 @@ import Coupon from "./components/Coupon";
 import AppNewProvider from "./api/appProvider";
 import CheckoutVisaCard from "./components/CheckoutVisaCard";
 import PaymentFailPage from "./components/PaymentFailPage";
+import CheckoutPaypal from "./components/CheckoutPaypal";
+import SendEmail from "./components/SendEmail";
 
 let designsPerPage = 10;
 let APIdomain = AppNewProvider.domain;
@@ -265,6 +267,8 @@ const App = () => {
               <Route exact path="/payment_fail" component={PaymentFailPage} />
               <Route exact path="/coupon" component={Coupon} />
               <Route exact path="/visacard" component={CheckoutVisaCard} />
+              <Route exact path="/paypal" component={CheckoutPaypal} />
+              <Route exact path="/payment" component={SendEmail} />
 
               {/* render={ (props) => <Checkout data= {state.cart} {...props} removeItemFromCart ={removeItemFromCart} />}/> */}
               {/* </Switch> */}
