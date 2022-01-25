@@ -19,6 +19,8 @@ const DesignsList = () => {
   const handleClick = (e) => {
     let selectedDesign = e.target.getAttribute("data-name");
     let selectedThumb = e.target.getAttribute("src");
+    wholeContext.dispatch({ type: "set_BusySignal", payload: true });
+
     selectDesign(selectedDesign, selectedThumb);
   };
   return (

@@ -181,7 +181,7 @@ const App = () => {
       payload: true,
     });
     //dispatch({ type: "set_BusySignal", payload: true });
-
+    
     var designElem = search(selectedDesign, initialState.designThumbs);
     var designdetails = designElem.Props;
 

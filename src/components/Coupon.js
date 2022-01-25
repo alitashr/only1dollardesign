@@ -77,7 +77,7 @@ const formReducer = (state, action) => {
 const checkCoupon = (code, total) => {
   return new Promise((resolve, reject) => {
     axios
-      .post('http://alternative.com.np/atcurrency/atapp.php?action=checkcoupon&id=' + code + '&total=' + total)
+      .post('https://alternative.com.np/atcurrency/atapp.php?action=checkcoupon&id=' + code + '&total=' + total)
       .then((response) => {
         resolve(response.data);
       })
@@ -203,6 +203,7 @@ const Coupon = () => {
             '&card=coupon'
         )
         .then((response) => {
+            console.log(".then -> response", response)
             const downloadLink = `https://v3.explorug.com/Only1DollarDesign/${filename}.zip`;
           sessionStorage.setItem("downloadLink", downloadLink);
           setDownloadLink(downloadLink)
@@ -290,7 +291,7 @@ const Coupon = () => {
       const cacheId = getCacheId(cart[0].thumb);
       //https://only1dollardesigns.com/sendemail.php?buyer=alita-shrestha&buyeremail=alita@explorug.net&filename=shrestha230292&cache=AF802D76625EA3B4066EC8241EB98997&designs=Abstract/Nimrite%7CDesigners-Collection/Ageicent%7CAbstract/Heliolood%7CAbstract/Axiomio
       axios
-        .post('http://alternative.com.np/atcurrency/sendemail1dol.php?buyer=' + buyer + '&buyeremail=' + buyeremail + '&filename=' + filename + '&cache=' + cacheId + '&designs=' + designArrStr)
+        .post('https://alternative.com.np/atcurrency/sendemail1dol.php?buyer=' + buyer + '&buyeremail=' + buyeremail + '&filename=' + filename + '&cache=' + cacheId + '&designs=' + designArrStr)
         .then((response) => {
           resolve(response.data);
         })

@@ -313,7 +313,7 @@ export const getDesignsListStr = (cart) => {
   });
   const lastBarPos = designArrStr.lastIndexOf('|');
   designArrStr = designArrStr.substr(0, lastBarPos);
-  designArrStr = designArrStr.replace(/ /g, '-');
+  //designArrStr = designArrStr.replace(/ /g, '-');
   return designArrStr;
 };
 

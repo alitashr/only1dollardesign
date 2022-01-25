@@ -55,12 +55,12 @@ const Checkout = () => {
     });
 
     //for now
-    itemList =
-      itemList !== ""
-        ? itemList
-        : "&item_name_1=Lunazoph&amount_1=1" +
-          "&item_name_2=Mechanic&amount_2=1" +
-          "&item_name_3=Wiros Egolox&amount_3=1";
+    // itemList =
+    //   itemList !== ""
+    //     ? itemList
+    //     : "&item_name_1=Lunazoph&amount_1=1" +
+    //       "&item_name_2=Mechanic&amount_2=1" +
+    //       "&item_name_3=Wiros Egolox&amount_3=1";
 
     var link =
       "https://www.paypal.com/cgi-bin/webscr?currency_code=USD&cmd=_cart&upload=1&business=onlyhundred@explorug.net&lc=US&notify_url=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fipn%2ephp" +
@@ -69,9 +69,8 @@ const Checkout = () => {
       "&button_subtype=services&no_note=1&no_shipping=1&rm=1" +
       "&return=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fthank" +
       "&cancel_return=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fhelp&bn=PP%2dBuyNowBF%3abtn_buynow_LG%2egif%3aNonHosted";
-    //var link = 'http://192.168.0.176/AT/NIBL/niblpay.aspx?itemlist='+ itemList;
     console.log(link);
-    window.location = link;
+    //window.location = link;
   };
 
   
@@ -130,7 +129,6 @@ const Checkout = () => {
                       </strong>
                       <br />${cart.length}.00 Total buy
                     </CheckoutButton>
-                    {/* <img src="https://galaincha.com.np/img/Pay-with-PayPal.jpg"/> */}
                     <BtnLink to={{ pathname: "/visacard" }}>
                     <CheckoutButton marginTop="10px">
                       <strong>
