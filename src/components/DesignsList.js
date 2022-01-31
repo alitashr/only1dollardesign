@@ -14,7 +14,6 @@ const DesignsList = () => {
 
   const wholeContext = useContext(WholeContext);
   let thumbs = wholeContext.state.designThumbs;
-  console.log("DesignsList -> thumbs", thumbs)
   let showContentLoadingSignal = wholeContext.state.showContentLoadingSignal;
 
   const handleClick = (e) => {

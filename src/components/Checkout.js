@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { Col, Row } from "react-bootstrap";
-
 import {
   CheckoutButton,
   CartItemWrapper,
@@ -27,16 +26,9 @@ const Checkout = () => {
   useEffect(() => {
     sessionStorage.setItem("designsCount", cart.length);
   }, [cart]);
-  // useEffect(()=>{
-  //   const NIBLLink = NIBLcheckOutAction();
-  //   console.log("useEffect -> NIBLLink", NIBLLink)
-  //   setNIBLIframeSrc(NIBLLink);
-
-  // }, [cart])
 
   const removeItemFromCart = (item) => {
     let index = cart.indexOf(item);
-    console.log("item to remove " + index);
     let designcart = cart;
     designcart.splice(index, 1);
     cart = designcart;
@@ -46,31 +38,21 @@ const Checkout = () => {
       payload: cart,
     });
   };
-  const checkOutAction = () => {
-    var itemList = "";
-    cart.forEach((element, index) => {
-      let i = index + 1;
-      itemList += "&item_name_" + i + "=" + getDesignName(element.design) + "&amount_" + i + "=1";
-    });
-
-    //for now
-    // itemList =
-    //   itemList !== ""
-    //     ? itemList
-    //     : "&item_name_1=Lunazoph&amount_1=1" +
-    //       "&item_name_2=Mechanic&amount_2=1" +
-    //       "&item_name_3=Wiros Egolox&amount_3=1";
-
-    var link =
-      "https://www.paypal.com/cgi-bin/webscr?currency_code=USD&cmd=_cart&upload=1&business=onlyhundred@explorug.net&lc=US&notify_url=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fipn%2ephp" +
-      itemList +
-      //"&custom=543a385a-cbe8-4aae-bd17-a06e31cc8e93"+
-      "&button_subtype=services&no_note=1&no_shipping=1&rm=1" +
-      "&return=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fthank" +
-      "&cancel_return=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fhelp&bn=PP%2dBuyNowBF%3abtn_buynow_LG%2egif%3aNonHosted";
-    console.log(link);
-    //window.location = link;
-  };
+  // const checkOutAction = () => {
+  //   var itemList = "";
+  //   cart.forEach((element, index) => {
+  //     let i = index + 1;
+  //     itemList += "&item_name_" + i + "=" + getDesignName(element.design) + "&amount_" + i + "=1";
+  //   });
+  //   var link =
+  //     "https://www.paypal.com/cgi-bin/webscr?currency_code=USD&cmd=_cart&upload=1&business=onlyhundred@explorug.net&lc=US&notify_url=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fipn%2ephp" +
+  //     itemList +
+  //     //"&custom=543a385a-cbe8-4aae-bd17-a06e31cc8e93"+
+  //     "&button_subtype=services&no_note=1&no_shipping=1&rm=1" +
+  //     "&return=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fthank" +
+  //     "&cancel_return=http%3a%2f%2fwww%2eonly1dollardesign%2ecom%2fhelp&bn=PP%2dBuyNowBF%3abtn_buynow_LG%2egif%3aNonHosted";
+  //   console.log(link);
+  // };
 
   return (
     <Col lg={{ span: 8, offset: 2 }} md={{ span: 10, offset: 1 }} sm={{ span: 10, offset: 1 }} xm={12}>
@@ -95,7 +77,6 @@ const Checkout = () => {
                 {cart.map((item, index) => (
                   <CartItemWrapper key={index}>
                     <CartIndex>{index + 1}.</CartIndex>
-
                     <div className="cartItem pull-left">
                       <CartDesignThumb src={item.thumb} width="100px" pullLeft></CartDesignThumb>
                       <CartInfo pullLeft>
@@ -118,8 +99,6 @@ const Checkout = () => {
             )}
             <Col lg={5} md={5} sm={6} xs={12}>
               <center>
-                {/* <div id="googlePayContainer" style={{ marginBottom: "1em", display: "none" }}></div> */}
-
                 {cart.length > 0 ? (
                   <div>
                     <BtnLink to={{ pathname: "/paypal" }}>
@@ -142,17 +121,6 @@ const Checkout = () => {
                         <br />${cart.length}.00 Total buy
                       </CheckoutButton>
                     </BtnLink>
-                    {/* <iframe
-                      src={NIBLIframeSrc}
-                      frameborder="0"
-                      height="50"
-                      width="210"
-                      scrolling="no"
-                      seamless=""
-                      id="PayLink"
-                      class=""
-                    ></iframe> */}
-
                     <BtnLink to={{ pathname: "/coupon" }}>
                       <CheckoutButton marginTop="10px">
                         <strong>

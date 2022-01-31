@@ -14,13 +14,20 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  
-  &:hover{
+
+  &:hover {
     background: linear-gradient(#2e506c, #507a9a);
     color: #fff;
     text-decoration: none;
   }
- 
+  &.use-paypal-button {
+    border: none;
+    opacity: 0.7;
+    cursor: not-allowed !important;
+    &:hover{
+      background: linear-gradient(#507a9a, #2e506c);
+    }  
+  }
 }
 
 .checkoutButtons {
@@ -50,6 +57,6 @@
     align-items: center;
   }
 }
-.checkout-back-button{
+.checkout-back-button {
   margin-bottom: 0.5rem;
 }

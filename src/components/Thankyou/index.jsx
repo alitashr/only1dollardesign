@@ -1,10 +1,8 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {Col} from 'react-bootstrap';
 import styled from 'styled-components';
 
 import './index.css';
-import axios from 'axios';
 const CouponForm = styled(Col)`
   margin: auto;
 `;
@@ -36,13 +34,10 @@ const ThankMsg  = styled.div`
     }
 `
 const Thankyou = props => {
-    // const {method, designsCount, couponTotalAmt, downloadLink=''} = props
-    // console.log(props)
     const designsCount = sessionStorage.getItem('designsCount') || 0;
     const couponTotalAmt = sessionStorage.getItem('couponTotalAmt') || 0;
     const downloadLink = sessionStorage.getItem('downloadLink') || ''; //call for download link
     const method = sessionStorage.getItem('method') || '';
-    const designArrStr = sessionStorage.getItem('designArrStr') || '';
     return (
         <MessageContainer>
             <div>
@@ -85,7 +80,6 @@ const Thankyou = props => {
                     <br/>
                     <a href="mailto:contact@only1dollardesign.com" target="_new">contact@only1dollardesigns.com</a>
             </div>
-          
         </MessageContainer>
     );
 };

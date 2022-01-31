@@ -106,9 +106,6 @@ export function resizeKeepingAspect(image, container, fitType = "fit_inside", re
   if (containerheight === 0 || containerwidth === 0) return { width: imagewidth, height: imageheight };
   let width = imagewidth,
     height = imageheight;
-  //console.log("container: ", containerwidth, containerheight);
-  //console.log("image", imagewidth, imageheight);
-
   switch (fitType) {
     case "fit_inside":
       if (imagewidth > imageheight) {

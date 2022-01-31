@@ -9,6 +9,11 @@ let provider = "appproviderv3.aspx";
 const API_KEY = "apikey";
 
 export const paymentProvider = "https://explorug.com/archanastools/niblpayment/O1DDPayNPR.aspx"; //"http://192.168.1.136/nibl/O1DDPayNPR.aspx"; //"http://192.168.1.135/nibl/O1DDPayNPR.aspx";//
+export const couponProvider = "https://alternative.com.np/atcurrency/at-Coupon.php";
+export const checkCouponBalance = "https://alternative.com.np/atcurrency/atapp.php";
+export const paypalProvider = "https://only1dollardesigns.com/sendemail1dol.php";
+
+export const downloadLinkPrefix = "https://v3.explorug.com/Only1DollarDesign/";
 const postHttpClient = (data, config) =>
   HttpClient.post(`${domain}/${provider}`, data, config).then((response) => response.data);
 

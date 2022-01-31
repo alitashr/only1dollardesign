@@ -228,7 +228,6 @@ const App = () => {
     let { index, currentPage, loadNewPage } = indexVariables(direction);
     if (loadNewPage) {
       LoadPage(currentPage, false).then((thumbList) => {
-        // console.log(thumbList);
         initialState.selectedDesign = thumbList[index].Name;
         initialState.selectedThumb = APIdomain + thumbList[index].Thumb;
         selectDesign(initialState.selectedDesign, initialState.selectedThumb);
@@ -236,7 +235,6 @@ const App = () => {
     } else {
       initialState.selectedDesign = designthumbArray[index].Name;
       initialState.selectedThumb = APIdomain + designthumbArray[index].Thumb;
-      //console.log("handleDesignChange -> initialState.selectedThumb", initialState.selectedThumb, designthumbArray);
       selectDesign(initialState.selectedDesign, initialState.selectedThumb);
     }
   };

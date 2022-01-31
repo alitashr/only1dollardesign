@@ -1,19 +1,18 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { PayPalScriptProvider, PayPalButtons, FUNDING } from "@paypal/react-paypal-js";
 
 import { Form } from "react-bootstrap";
 import { Col } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import AppNewProvider, { getApiKey, paymentProvider } from "../../api/appProvider";
+import { downloadLinkPrefix, getApiKey, paypalProvider } from "../../api/appProvider";
 import { WholeContext } from "../../App";
-import { getCacheId, getDesignName, getDesignsListStr, getZipFilename, validateEmail } from "../../utils/utils";
+import { getCacheId, getDesignsListStr, getZipFilename, validateEmail } from "../../utils/utils";
 import GeneralInfo from "../GeneralInfo";
 import Input from "../Input";
-import { BtnLink, CategoryTitle, CheckoutButton, CouponMsg } from "../StyledComponents";
+import { CategoryTitle, CouponMsg } from "../StyledComponents";
 
 const CheckoutPaypal = (props) => {
-  //const history = useHistory();
   const navigate = useNavigate();
 
   const [userInfo, setUserInfo] = useState({ name: "", email: "" });
@@ -25,26 +24,10 @@ const CheckoutPaypal = (props) => {
   let cart = checkoutContext.state.cart;
   cart = cart ? cart : [];
 
-  function getJsonFromUrl(url) {
-    if (!url) url = window.location.search;
-    var query = url.substr(1);
-    var result = {};
-    query.split("&").forEach(function (part) {
-      var item = part.split("=");
-      result[item[0]] = decodeURIComponent(item[1]);
-    });
-    return result;
-  }
-
-  //const handleOnClick = useCallback(() => history.push('/sample'), [history]);
-
   useEffect(() => {
     if (paymentComplete) {
-      sendEmail(userInfo).then(()=>{
-        //useCallback(() => history.push('/sample'), [history]);
-        //history.push('/thank');
-       // handleOnClick()
-       navigate('/thank')
+      sendEmail(userInfo).then(() => {
+        navigate("/thank");
       });
       setPaymentComplete(false);
     }
@@ -77,7 +60,6 @@ const CheckoutPaypal = (props) => {
   };
 
   const showErrorMsg = () => {
-    console.log(userInfo);
     if (!formValidation) {
       setErrorMsg("Please enter your name and email address");
     }
@@ -87,14 +69,12 @@ const CheckoutPaypal = (props) => {
     return new Promise((resolve, reject) => {
       const buyer = userInfo.name.replace(/ /g, "-");
       const buyeremail = userInfo.email;
-
       const filename = getZipFilename(userInfo.name);
       const designArrStr = getDesignsListStr(cart);
-
       const cacheId = getCacheId(cart[0].thumb);
-
       const url =
-        "https://alternative.com.np/atcurrency/sendemail1dol.php?buyer=" +
+        paypalProvider +
+        "?buyer=" +
         buyer +
         "&buyeremail=" +
         buyeremail +
@@ -102,15 +82,15 @@ const CheckoutPaypal = (props) => {
         filename +
         "&cache=" +
         cacheId +
+        "&key=" +
+        getApiKey() +
         "&designs=" +
         designArrStr;
-      //      console.log("returnnewPromise -> url", url);
       axios
         .post(url)
         .then((response) => {
-          const downloadLink = `https://v3.explorug.com/Only1DollarDesign/${filename}.zip`;
+          const downloadLink = `${downloadLinkPrefix}${filename}.zip`;
           sessionStorage.setItem("downloadLink", downloadLink);
-        
           resolve(response.data);
         })
         .catch((error) => {
@@ -135,7 +115,6 @@ const CheckoutPaypal = (props) => {
 
   const onApprove = (data, actions) => {
     return actions.order.capture().then(async function (orderData) {
-      console.log("orderData", orderData, "userInfo", userInfo);
       setPaymentComplete(true);
     });
   };
@@ -148,7 +127,6 @@ const CheckoutPaypal = (props) => {
         <Form
           onSubmit={(e) => {
             e.preventDefault();
-            console.log("form submit");
           }}
         >
           <Form.Group>
@@ -180,8 +158,8 @@ const CheckoutPaypal = (props) => {
                 style={{ display: !formValidation ? "block" : "none" }}
                 onClick={showErrorMsg}
               >
-                <div className="galaincha-buttons">
-                  <div className="galaincha-buttons back-button">
+                <div className="galaincha-buttons use-paypal-button">
+                  <div className="back-button">
                     <span>Use Paypal</span>
                   </div>
                 </div>
@@ -189,10 +167,9 @@ const CheckoutPaypal = (props) => {
               <div style={{ display: !formValidation ? "none" : "block" }}>
                 <PayPalScriptProvider
                   options={{
-                    "client-id": "AfwdJe28NtRL8n0tlLZMxWngJtnJZ-KN0Ep_JSYl4bRVz0EkF_99InvNtQYlWXu4eX9ys207UKBCyUvU",
+                    "client-id": "AX5aiX2MSdhH3untE0-YrP67Rj133tlkRvVHy2JKHpasPHZrqQfJJGjNewPisoiNWvUGsDmUErMz0kZc",
+                    //"AfwdJe28NtRL8n0tlLZMxWngJtnJZ-KN0Ep_JSYl4bRVz0EkF_99InvNtQYlWXu4eX9ys207UKBCyUvU", //sandbox
                     currency: "USD",
-                    // ,
-                    // "disable-funding": "credit,card"
                   }}
                 >
                   <PayPalButtons
@@ -203,18 +180,6 @@ const CheckoutPaypal = (props) => {
                   />
                 </PayPalScriptProvider>
               </div>
-
-              {/* <BtnLink to={{ pathname: "/checkout" }}>
-              <CheckoutButton inlineBlock bgColor="#ccc" bgColorHover="#ccc" bgHoverText="#323232">
-                <strong>
-                  <span>
-                    BACK TO
-                    <br />
-                    CART
-                  </span>
-                </strong>
-              </CheckoutButton>
-            </BtnLink> */}
               <div className="checkout-back-button">
                 <Link to={{ pathname: "/checkout" }} className="galaincha-buttons">
                   <div className="galaincha-buttons back-button">

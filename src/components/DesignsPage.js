@@ -1,46 +1,34 @@
-import React, {useContext} from 'react';
-import {Container, Row, Col} from 'react-bootstrap';
+import React, { useContext } from "react";
+import { Container, Row, Col } from "react-bootstrap";
 
-import DesignsFilter from './DesignsFilter';
-import DesignCategory from './DesignCategory';
-import DesignsList from './DesignsList';
-import Pagenav from './Pagenav';
-import FullDesign from '../components/FullDesign/index';
+import DesignsFilter from "./DesignsFilter";
+import DesignCategory from "./DesignCategory";
+import DesignsList from "./DesignsList";
+import Pagenav from "./Pagenav";
+import FullDesign from "../components/FullDesign/index";
 
-import {WholeContext} from '../App';
-
+import { WholeContext } from "../App";
 
 const DesignsPage = (props) => {
-console.log("DesignsPage -> props", props)
-
-    const checkoutContext = useContext(WholeContext);
-    let selectedDesign = checkoutContext.state.selectedDesign;
-
-    return (
-            <div>
-            <Container style={{marginTop:40}}>
-            
-                <Row>
-                    <Col xs={8}> 
-                        <DesignsFilter/>
-                    </Col>
-                    <Col> 
-                        <DesignCategory/>
-                    </Col>
-                </Row>
-                <DesignsList />
-                <Pagenav />
-                {
-                    selectedDesign !==''?
-                    <FullDesign/>:null
-                }
-                
-                    
-            </Container>     
-           
-            
-        </div>
-    );
+  const checkoutContext = useContext(WholeContext);
+  let selectedDesign = checkoutContext.state.selectedDesign;
+  return (
+    <div>
+      <Container style={{ marginTop: 40 }}>
+        <Row>
+          <Col xs={8}>
+            <DesignsFilter />
+          </Col>
+          <Col>
+            <DesignCategory />
+          </Col>
+        </Row>
+        <DesignsList />
+        <Pagenav />
+        {selectedDesign !== "" ? <FullDesign /> : null}
+      </Container>
+    </div>
+  );
 };
 
 export default DesignsPage;

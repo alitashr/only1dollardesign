@@ -1,4 +1,4 @@
-import React, { PropTypes } from "react";
+import React from "react";
 import { Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { CategoryTitle } from "../StyledComponents";

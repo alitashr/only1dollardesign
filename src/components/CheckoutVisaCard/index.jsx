@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import AppNewProvider, { getApiKey, paymentProvider } from "../../api/appProvider";
+import AppNewProvider, { downloadLinkPrefix, getApiKey, paymentProvider } from "../../api/appProvider";
 import { WholeContext } from "../../App";
 import { getCacheId, getDesignName, getZipFilename, validateEmail } from "../../utils/utils";
 import GeneralInfo from "../GeneralInfo";
@@ -12,8 +12,8 @@ import { CategoryTitle, CouponMsg } from "../StyledComponents";
 const CheckoutVisaCard = (props) => {
   const [userInfo, setUserInfo] = useState({ name: "", email: "" });
   const [formValidation, setFormValidation] = useState(false);
-  const [hidePaymentButtonImage, setHidePaymentButtonImage] = useState(false);
-  const [isIframeFirstLoad, setIsIframeFirstLoad] = useState(true);
+  // const [hidePaymentButtonImage, setHidePaymentButtonImage] = useState(false);
+  // const [isIframeFirstLoad, setIsIframeFirstLoad] = useState(true);
 
   const [errorMsg, setErrorMsg] = useState("");
   const [NIBLIframeSrc, setNIBLIframeSrc] = useState("");
@@ -29,7 +29,6 @@ const CheckoutVisaCard = (props) => {
     if (!userInfo || userInfo.name === "" || userInfo.email === "") return;
     const NIBLLink = NIBLcheckOutAction();
     setNIBLIframeSrc(NIBLLink);
-    //setdownloadLink
   }, [cart, userInfo]);
 
   function getJsonFromUrl(url) {
@@ -44,23 +43,8 @@ const CheckoutVisaCard = (props) => {
   }
 
   useEffect(() => {
-    if (!formValidation) {
-      setHidePaymentButtonImage(false);
-    } else {
-      if (isIframeFirstLoad) {
-        setTimeout(() => {
-          setIsIframeFirstLoad(false);
-          setHidePaymentButtonImage(true);
-        }, 3000);
-      } else {
-        setHidePaymentButtonImage(true);
-      }
-    }
-  }, [formValidation]);
-  useEffect(() => {
     if (!NIBLIframeSrc) return;
     let params = getJsonFromUrl(NIBLIframeSrc);
-
     var designList = [];
     designList = cart.map((item) => getDesignName(item.design));
 
@@ -124,7 +108,7 @@ const CheckoutVisaCard = (props) => {
 
     //let designPathArr = cart.map((item) => item.design);
 
-    sessionStorage.setItem("downloadLink", `https://v3.explorug.com/Only1DollarDesign/${filename}.zip`);
+    sessionStorage.setItem("downloadLink", `${downloadLinkPrefix}${filename}.zip`);
     var link =
       paymentProvider +
       "?itemlist=" +
@@ -141,18 +125,15 @@ const CheckoutVisaCard = (props) => {
       cacheId +
       "&filename=" +
       filename;
-
     return link;
   };
 
   return (
     <Col lg={{ span: 8, offset: 2 }} md={{ span: 8, offset: 2 }} sm={{ span: 8, offset: 1 }} xm={12}>
       <CategoryTitle text={"Checkout using Visa card"} marginbottom="2em" />
-
       <div style={{ margin: "auto" }} className="checkout-form-container">
         <Form
           onSubmit={() => {
-            console.log("form submit");
           }}
         >
           <Form.Group>
@@ -183,10 +164,10 @@ const CheckoutVisaCard = (props) => {
                 className="paymentButton-image"
                 type="submit"
                 // style={{ display: !formValidation ? "block" : "none" }}
-                style={{ display: !hidePaymentButtonImage ? "block" : "none" }}
+                style={{ display: !formValidation ? "block" : "none" }}
               >
                 <img
-                  src="https://explorug.com/archanastools/niblpayment/TrialPageAssets/Pay-with-card.jpg"
+                  src="./images/Pay-with-card.jpg"
                   onClick={showErrorMsg}
                   alt="visa card button"
                 />
@@ -194,7 +175,7 @@ const CheckoutVisaCard = (props) => {
 
               <iframe
                 src={NIBLIframeSrc}
-                style={{ display: hidePaymentButtonImage ? "block" : "none" }}
+                style={{ display: formValidation ? "block" : "none" }}
                 frameBorder="0"
                 height="50"
                 width="210"
@@ -204,14 +185,6 @@ const CheckoutVisaCard = (props) => {
                 className=""
                 title="checkout using visa card"
               ></iframe>
-
-              {/* <CheckoutButton
-                  inlineBlock
-                  onClick={gotoPayment('paypal')}>
-              <strong><span>Use Paypal</span></strong>
-                  <br/>
-                  <span>$ {couponFormState.couponTotalAmt}.00 TOTAL</span>
-              </CheckoutButton> */}
             </div>
             <div className="checkout-back-button">
               <Link to={{ pathname: "/checkout" }} className="galaincha-buttons">
@@ -219,17 +192,6 @@ const CheckoutVisaCard = (props) => {
                   <span>BACK TO CART</span>
                 </div>
               </Link>
-              {/* <BtnLink to={{ pathname: "/checkout" }}>
-              <CheckoutButton inlineBlock bgColor="#ccc" bgColorHover="#ccc" bgHoverText="#323232">
-                <strong>
-                  <span>
-                    BACK TO
-                    <br />
-                    CART
-                  </span>
-                </strong>
-              </CheckoutButton>
-            </BtnLink> */}
             </div>
           </div>
 

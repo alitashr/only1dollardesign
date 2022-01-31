@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef } from "react";
-import { Col, Row } from "react-bootstrap";
+import { Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 import BusySignal from "../BusySignal";
@@ -17,8 +17,6 @@ import { getDesignName } from "../../utils/utils";
 
 const FullDesign = (props) => {
   const imageRef = useRef(null);
-  // let {handleClose, handleCart, handleDesignChange, goToCheckout} = props;
-
   const designContextFn = useContext(DesignContext);
   const handleDesignChange = designContextFn.handleDesignChange;
 
@@ -31,14 +29,9 @@ const FullDesign = (props) => {
   let cart = designContext.state.cart;
   const selectedThumb = designContext.state.selectedThumb;
   const firstDesign = designContext.state.firstDesign;
-  // const handleDesignChange = designContext.state.handleDesignChange;
 
   const dispatch = designContext.dispatch;
   let loading = designContext.state.designLoading;
-
-  // let imgsrc= designDetails!==''? "https://explorug.com/v2/" + designDetails.RenderingProperties.RenderedImagePath: '';
-  //let imgsrc= designCanvas.toDataURL();
-
   useEffect(() => {
     if (!designCanvas) return;
     if (!imageRef.current) {
@@ -46,9 +39,6 @@ const FullDesign = (props) => {
     }
 
     imageRef.current.src = designCanvas.toDataURL();
- 
-    // imageRef.current.style.width = `${designCanvas.width}px`;
-    // imageRef.current.style.height = `${designCanvas.height}px`;
   }, [designCanvas]);
 
   const Intensity = (rgb) => {
@@ -65,12 +55,7 @@ const FullDesign = (props) => {
     var textColor = Intensity(color) > 128 ? "#000" : "#fff";
     return textColor;
   };
-  // const getDesignName =(designPath)=>{
-  //     var dotpos = designPath.lastIndexOf('.');
-  //     var slashpos = designPath.lastIndexOf('/') +1;
-  //     var roomName = designPath.substr(slashpos, dotpos-slashpos);
-  //     return roomName;
-  // }
+
   let designName = getDesignName(selectedDesign);
 
   const closePopup = () => {
@@ -96,8 +81,6 @@ const FullDesign = (props) => {
     return new Promise((resolve, reject) => {
       let designToAdd = selectedDesign;
       let designCart = cart;
-      // let selectedThumb = selectedThumb;
-
       designCart.push({ design: designToAdd, thumb: selectedThumb });
 
       cart = designCart;
@@ -121,7 +104,6 @@ const FullDesign = (props) => {
 
   const handleImageLoaded = () => {
     dispatch({ type: "set_designLoading", payload: false });
-    //loading = false;
   };
   const showNextDesign = () => {
     handleDesignChange("next");
@@ -155,34 +137,34 @@ const FullDesign = (props) => {
                 <img alt="next icon" src={nextImg} width="30" />
               </NavBtn>
               <div className="DesignDisplay" xs={11}>
-                  <Col className="nopadding">
-                    <div className="full-design-container">
-                      <img
-                        alt="full design"
-                        ref={imageRef}
-                        className="FullDesign"
-                        data-name={selectedDesign}
-                        onLoad={handleImageLoaded}
-                      />
-                    </div>
-                  </Col>
-                  <Col className="ColorPatchCol">
-                    {designDetails.DesignColors.length > 0
-                      ? designDetails.DesignColors.map((color, index) => (
-                          <div key={index}>
-                            <div
-                              className="Colorpatch"
-                              style={{
-                                backgroundColor: color.Color || "#ccc",
-                                color: getTextColor(color.Color) || "#fff",
-                              }}
-                            >
-                              <div>{color.ColorName}</div>
-                            </div>
+                <Col className="nopadding">
+                  <div className="full-design-container">
+                    <img
+                      alt="full design"
+                      ref={imageRef}
+                      className="FullDesign"
+                      data-name={selectedDesign}
+                      onLoad={handleImageLoaded}
+                    />
+                  </div>
+                </Col>
+                <Col className="ColorPatchCol">
+                  {designDetails.DesignColors.length > 0
+                    ? designDetails.DesignColors.map((color, index) => (
+                        <div key={index}>
+                          <div
+                            className="Colorpatch"
+                            style={{
+                              backgroundColor: color.Color || "#ccc",
+                              color: getTextColor(color.Color) || "#fff",
+                            }}
+                          >
+                            <div>{color.ColorName}</div>
                           </div>
-                        ))
-                      : null}
-                  </Col>
+                        </div>
+                      ))
+                    : null}
+                </Col>
                 <Col className="DesignNameArea">
                   <div className="DesignInfo">
                     <div className="DesignInfoName">{designName}</div>
@@ -201,13 +183,6 @@ const FullDesign = (props) => {
                           <div style={{ fontSize: "18px" }}>$ 1</div>
                         </CartBtn>
                       </Link>
-                      {/* <CartBtn incart={inCart.toString()} onClick={goToCheckout} href="/checkout">
-                                            <span>
-                                                BUY
-                                            </span>
-                                            <span>DESIGN</span>
-                                            <br/><div style={{fontSize:'18px'}}>$ 1</div>
-                                    </CartBtn> */}
                     </CartBtnWrap>
                     <CartBtnWrap background="#DB97DB" onClick={() => handleCart(selectedDesign, selectedThumb)}>
                       <CartBtn incart={inCart.toString()}>
