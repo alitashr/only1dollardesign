@@ -1,8 +1,6 @@
 import React, {useContext} from 'react';
 import {FilterBadge} from './StyledComponents';
-
 import {WholeContext} from '../App';
-
 
 function DesignsFilter(){
     const filterContext = useContext(WholeContext);

@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useState } from "react";
-import { HashRouter as Router, Route, Routes } from "react-router-dom";
+import { HashRouter as Router, Route, Routes, useParams } from "react-router-dom";
 
 import "./App.css";
 import "./index.scss";
@@ -109,6 +109,7 @@ const openTOU = () => {
 };
 const App = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  //console.log("App -> state", state)
   const [year, setYear] = useState("");
 
   useEffect(() => {
@@ -118,6 +119,8 @@ const App = () => {
     login().then((key) => {
       AppNewProvider.fetchDesignList().then((data) => {
         let designs = UtilitiesFn.GetDesigns(data);
+        // console.log("AppNewProvider.fetchDesignList -> designs", designs);
+
         let folders = UtilitiesFn.GetFolders(data);
         initialState.designList = designs;
         initialState.designCategories = folders;
@@ -125,6 +128,10 @@ const App = () => {
         dispatch({
           type: "set_designCategories",
           payload: folders,
+        });
+        dispatch({
+          type: "set_designList",
+          payload: designs,
         });
         LoadPage(0, true);
       });
@@ -176,16 +183,17 @@ const App = () => {
     }
   }
 
-  const selectDesign = (selectedDesign, selectedThumb) => {
+  const selectDesign = (selectedDesign, selectedThumb, props) => {
     dispatch({
       type: "set_designLoading",
       payload: true,
     });
     //dispatch({ type: "set_BusySignal", payload: true });
-
-    var designElem = search(selectedDesign, initialState.designThumbs);
-    var designdetails = designElem.Props;
-
+    var designdetails = props;
+    if (!props) {
+      var designElem = search(selectedDesign, initialState.designThumbs);
+      designdetails = designElem.Props;
+    }
     AppNewProvider.getFullRenderedDesign({ designDetails: designdetails, fullpath: selectedDesign }).then((canvas) => {
       dispatch({
         type: "set_designCanvas",
@@ -226,6 +234,7 @@ const App = () => {
   const handleDesignChange = (direction) => {
     let designthumbArray = initialState.designThumbs;
     let { index, currentPage, loadNewPage } = indexVariables(direction);
+    if(!index) index = 0;
     if (loadNewPage) {
       LoadPage(currentPage, false).then((thumbList) => {
         initialState.selectedDesign = thumbList[index].Name;
@@ -258,13 +267,15 @@ const App = () => {
               {/* <Switch> */}
               <Routes>
                 <Route path="/" element={<DesignsPage />} />
+                <Route path="/:designname" element={<DesignsPage />} />
+                <Route path="/#home" element={<DesignsPage />} />
                 <Route path="faq" element={<FAQ />} />
-                <Route exact path="/checkout" element={<Checkout/>} />
-                <Route exact path="/thank" element={<ThankyouPage/>} />
-                <Route exact path="/payment_fail" element={<PaymentFailPage/>} />
-                <Route exact path="/coupon" element={<Coupon/>} />
-                <Route exact path="/visacard" element={<CheckoutVisaCard/>} />
-                <Route exact path="/paypal" element={<CheckoutPaypal/>} />
+                <Route exact path="/checkout" element={<Checkout />} />
+                <Route exact path="/thank" element={<ThankyouPage />} />
+                <Route exact path="/payment_fail" element={<PaymentFailPage />} />
+                <Route exact path="/coupon" element={<Coupon />} />
+                <Route exact path="/visacard" element={<CheckoutVisaCard />} />
+                <Route exact path="/paypal" element={<CheckoutPaypal />} />
               </Routes>
               {/* render={ (props) => <Checkout data= {state.cart} {...props} removeItemFromCart ={removeItemFromCart} />}/> */}
               {/* </Switch> */}

@@ -12,7 +12,7 @@ const FooterBar = (props) => {
   return (
     <div>
       <NavBar expand="md" fixed="bottom" background="#fff">
-        <NavbarBrand href="#home" pullleft="true">
+        <NavbarBrand href="/" pullleft="true">
           <img src={logo} alt="logo" />
         </NavbarBrand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

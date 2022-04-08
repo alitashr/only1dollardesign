@@ -1,17 +1,14 @@
 import React, { useContext, useEffect, useRef } from "react";
 import { Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
-
 import BusySignal from "../BusySignal";
 import { NavBtn, ClosePopup, CartBtnWrap, CartBtn, CartOptions } from "../StyledComponents";
-
 import prevImg from "../../images/prev.png";
 import nextImg from "../../images/next.png";
 import closeBtn from "../../images/closePopUp.png";
 
 import { DesignContext } from "../../App";
 import { WholeContext } from "../../App";
-
 import UtilitiesFn from "../../functions/UtilitiesFn";
 import { getDesignName } from "../../utils/utils";
 

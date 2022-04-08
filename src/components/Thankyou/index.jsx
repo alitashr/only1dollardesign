@@ -78,7 +78,7 @@ const Thankyou = props => {
             <div>
                 <span>If you still have problems downloading the purchased designs, you can contact us at:</span>
                     <br/>
-                    <a href="mailto:contact@only1dollardesign.com" target="_new">contact@only1dollardesigns.com</a>
+                    <a href="mailto:contact@only1dollardesign.com" target="_new">contact@only1dollardesign.com</a>
             </div>
         </MessageContainer>
     );
