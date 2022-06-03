@@ -8,7 +8,7 @@ import Pagenav from "./Pagenav";
 import FullDesign from "../components/FullDesign/index";
 
 import { DesignContext, WholeContext } from "../App";
-import { useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import AppNewProvider from "../api/appProvider";
 let APIdomain = AppNewProvider.domain;
 const DesignsPage = (props) => {
@@ -51,9 +51,24 @@ const DesignsPage = (props) => {
           <Col xs={8}>
             <DesignsFilter />
           </Col>
-          <Col>
+          <Col className="design-catagory-wrapper">
             <DesignCategory />
           </Col>
+        </Row>
+        <Row>
+          <div>
+            <h6 style={{marginBottom: "1rem" }}>
+              <a
+                style={{color: "#652d90",textDecoration: "underline"}}
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://cdn.explorug.com/website/only1dollardesign/O1DD_catalog.pdf"
+              >
+                Download FREE sampler
+              </a>{" "}
+              of designs
+            </h6>
+          </div>
         </Row>
         <DesignsList />
         <Pagenav />
